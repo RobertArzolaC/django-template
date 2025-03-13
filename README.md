@@ -1,5 +1,3 @@
-# Knowing Labs Lis
-
 ## Configuration Development Environment
 
 1. **Create the virtual environment:**
