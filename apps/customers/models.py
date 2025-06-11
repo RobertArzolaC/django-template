@@ -28,5 +28,7 @@ class Account(SoftDeletableModel, TimeStampedModel):
         return self.user.get_full_name()
 
     @cached_property
-    def is_verified(self):
-        return EmailAddress.objects.filter(user=self.user, verified=True).exists()
+    def is_email_verified(self):
+        return EmailAddress.objects.filter(
+            user=self.user, verified=True
+        ).exists()

@@ -19,7 +19,7 @@ class CustomUserAdmin(UserAdmin):
         "is_superuser",
         "is_staff",
         "is_active",
-        "is_verified",
+        "is_email_verified",
         "get_login_link",
     )
     list_filter = (
@@ -65,12 +65,12 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ("email",)
     ordering = ("email",)
 
-    def is_verified(self, obj):
+    def is_email_verified(self, obj):
         email = EmailAddress.objects.filter(user=obj, primary=True).first()
         return email.verified if email else False
 
-    is_verified.short_description = "Verified"
-    is_verified.boolean = True
+    is_email_verified.short_description = "Verified"
+    is_email_verified.boolean = True
 
     def get_login_link(self, obj):
         if self.request.user.is_superuser:

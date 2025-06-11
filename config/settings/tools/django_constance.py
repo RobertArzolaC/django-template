@@ -14,10 +14,10 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 
 CONSTANCE_CONFIG = {
     "LOGO_IMAGE": ("default.png", _("Company logo"), "image_field"),
-    "JSON_FIELD_TEST": ({"name": "Robert"}, _("Test json field"), "json_field"),
+    "JSON_FIELD_TEST": ({"name": "test"}, _("Test json field"), "json_field"),
     "ENABLE_SEND_EMAIL": (True, _("Enable sending emails.")),
     "ENABLE_VERIFICATION_EMAIL": (True, _("Enable email verification.")),
-    "WEBSITE_DOMAIN": ("https://knowinglabs.com/", _("Website domain.")),
+    "WEBSITE_DOMAIN": ("https://company.com/", _("Website domain.")),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {

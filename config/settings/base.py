@@ -81,6 +81,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "constance.context_processors.config",
             ],
         },
     },
@@ -92,7 +93,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": config("DATABASE_URL", default="sqlite:///db.sqlite3", cast=db_url)  # noqa
+    "default": config(
+        "DATABASE_URL", default="sqlite:///db.sqlite3", cast=db_url
+    )  # noqa
 }
 
 # Password validation

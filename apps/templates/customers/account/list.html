@@ -176,7 +176,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-end pe-0" data-order="Inactive">
-                                        {% if account.is_verified %}
+                                        {% if account.is_email_verified %}
                                             <div class="badge badge-light-success">
                                                 {% trans "Yes" %}
                                             </div>
@@ -247,7 +247,7 @@
                                                         </a>
                                                     </div>
                                                 {% endif %}
-                                                {% if not account.is_verified and config.ENABLE_VERIFICATION_EMAIL %}
+                                                {% if not account.is_email_verified and config.ENABLE_VERIFICATION_EMAIL %}
                                                     <div class="menu-item px-3">
                                                         <a href="#" class="menu-link px-3 verify-account" data-user-id="{{ account.user.id }}">
                                                             {% trans "Verify" %}
