@@ -60,15 +60,29 @@ class GeographicLocationMixin(models.Model):
         verbose_name="Country",
     )
     department = models.ForeignKey(
-        Department, on_delete=models.PROTECT, verbose_name="Department"
+        Department,
+        on_delete=models.PROTECT,
+        verbose_name="Department",
+        null=True,
+        blank=True,
     )
     province = models.ForeignKey(
-        Province, on_delete=models.PROTECT, verbose_name="Province"
+        Province,
+        on_delete=models.PROTECT,
+        verbose_name="Province",
+        null=True,
+        blank=True,
     )
     district = models.ForeignKey(
-        District, on_delete=models.PROTECT, verbose_name="District"
+        District,
+        on_delete=models.PROTECT,
+        verbose_name="District",
+        null=True,
+        blank=True,
     )
-    address = models.CharField(max_length=255, verbose_name="Address")
+    address = models.CharField(
+        max_length=255, verbose_name="Address", blank=True
+    )
 
     class Meta:
         abstract = True
