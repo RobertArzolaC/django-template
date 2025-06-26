@@ -2,7 +2,7 @@
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
-    "python.defaultInterpreterPath": "./.venv/bin/python",
+    "python.defaultInterpreterPath": "./venv/bin/python",
     "editor.inlineSuggest.enabled": true,
     "python.envFile": "./.env",
     "editor.guides.indentation": true,
@@ -72,7 +72,7 @@
     "python.testing.unittestEnabled": true,
     "editor.defaultFormatter": "charliermarsh.ruff",
     "[django-html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "charliermarsh.ruff"
     },
     "ruff.lineLength": 80,
 }

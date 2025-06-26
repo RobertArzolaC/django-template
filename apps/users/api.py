@@ -13,22 +13,24 @@ class ToggleUserStatusView(LoginRequiredMixin, View):
         user_id = request.POST.get("user_id")
         action = request.POST.get("action")
 
-        target_user = get_object_or_404(models.User, id=int(user_id))
+        user = get_object_or_404(models.User, id=int(user_id))
 
         if action == "activate":
-            target_user.is_active = True
+            user.is_active = True
         elif action == "deactivate":
-            target_user.is_active = False
+            user.is_active = False
         else:
-            return JsonResponse({"success": False, "message": _("Invalid action")})
+            return JsonResponse(
+                {"success": False, "message": _("Invalid action")}
+            )
 
-        target_user.save()
+        user.save()
 
         return JsonResponse(
             {
                 "success": True,
                 "message": _("User status has been successfully updated"),
-                "is_active": target_user.is_active,
+                "is_active": user.is_active,
             }
         )
 
@@ -39,7 +41,9 @@ class UploadAvatarView(LoginRequiredMixin, View):
         avatar = request.FILES.get("avatar")
 
         if not avatar:
-            return JsonResponse({"success": False, "message": _("No file uploaded")})
+            return JsonResponse(
+                {"success": False, "message": _("No file uploaded")}
+            )
 
         user.avatar = avatar
         user.save()
@@ -58,7 +62,9 @@ class VerifyEmailView(LoginRequiredMixin, View):
         user_id = request.POST.get("user_id")
 
         if not user_id:
-            return JsonResponse({"success": False, "message": _("User ID is required")})
+            return JsonResponse(
+                {"success": False, "message": _("User ID is required")}
+            )
 
         email_address = EmailAddress.objects.get(user_id=int(user_id))
         email_address.verified = True

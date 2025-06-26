@@ -1,8 +1,6 @@
 from allauth.account.models import EmailAddress
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.utils.html import format_html
-from sesame.utils import get_query_string
 
 from apps.users.forms import CustomUserChangeForm, CustomUserCreationForm
 from apps.users.models import User
@@ -20,7 +18,6 @@ class CustomUserAdmin(UserAdmin):
         "is_staff",
         "is_active",
         "is_email_verified",
-        "get_login_link",
     )
     list_filter = (
         "is_active",
@@ -71,22 +68,6 @@ class CustomUserAdmin(UserAdmin):
 
     is_email_verified.short_description = "Verified"
     is_email_verified.boolean = True
-
-    def get_login_link(self, obj):
-        if self.request.user.is_superuser:
-            query_string = get_query_string(obj)
-            base_domain = f"{self.request.scheme}://{self.request.get_host()}"
-            url = f"{base_domain}{obj.get_absolute_url()}{query_string}"
-            return format_html(
-                '<button type="button" class="copy-link-btn" data-url="{}" '
-                'onclick="copyToClipboard(this)" style="background-color: #79aec8; '
-                'color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">'  # noqa
-                "Copy</button>",
-                url,
-            )
-        return "Not available"
-
-    get_login_link.short_description = "Magic Link"
 
     def get_queryset(self, request):
         self.request = request

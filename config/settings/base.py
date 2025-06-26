@@ -49,6 +49,7 @@ LOCAL_APPS = [
     "apps.authentication.apps.AuthenticationConfig",
     "apps.customers.apps.CustomersConfig",
     "apps.users.apps.UsersConfig",
+    "apps.location.apps.LocationConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -164,15 +165,13 @@ LOGIN_REDIRECT_URL = "/dashboard/"
 
 ACCOUNT_SIGNUP_REDIRECT_URL = "/login/"
 
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_LOGIN_METHODS = {"email"}
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 ACCOUNT_LOGOUT_ON_GET = True
 
-ACCOUNT_EMAIL_REQUIRED = True
-
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 

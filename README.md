@@ -41,3 +41,10 @@
    ```bash
    coverage report -m
    ```
+
+## Load Ubigeo
+
+1. **Load Ubigeo**
+   ```bash
+   python manage.py loaddata apps/location/fixtures/initial.json
+   ```

@@ -3,9 +3,9 @@
 {% load i18n allauth account %}
 {% load widget_tweaks %}
 
-{% block head_title %}
+{% block title_page %}
     {% trans "Sign In" %}
-{% endblock head_title %}
+{% endblock %}
 
 {% block content %}
 <div class="d-flex flex-column flex-lg-row flex-column-fluid">
@@ -15,7 +15,7 @@
                 <div class="py-2 py-lg-20">
                 </div>
                 <h1 class="d-none d-lg-block fw-bold text-white fs-2qx pb-5 pb-md-10">
-                    Welcome to Website
+                    Welcome to {{ config.PROJECT_NAME }}
                 </h1>
                 <p class="d-none d-lg-block fw-semibold fs-2 text-white">
                     Transform your laboratory management with integrated sample tracking, automated test
