@@ -42,6 +42,10 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "django_celery_beat",
+    "sesame",
+    "dal",
+    "dal_select2",
+    "cities_light",
 ]
 
 LOCAL_APPS = [
@@ -49,7 +53,6 @@ LOCAL_APPS = [
     "apps.authentication.apps.AuthenticationConfig",
     "apps.customers.apps.CustomersConfig",
     "apps.users.apps.UsersConfig",
-    "apps.location.apps.LocationConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -73,7 +76,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            BASE_DIR / "apps/templates",
+            BASE_DIR / "templates",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -136,21 +139,27 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
-    BASE_DIR / "apps/static",
+    BASE_DIR / "static",
 ]
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "apps/media"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Translation settings
 # https://docs.djangoproject.com/en/5.0/topics/i18n/translation/
 
 LANGUAGES = (
-    ("en", _("English")),
     ("es", _("Spanish")),
+    ("en", _("English")),
 )
 
-LOCALE_PATHS = [BASE_DIR / "apps/locale/"]
+LOCALE_PATHS = [BASE_DIR / "locale/"]
+
+# Django Cities Light settings
+# https://github.com/yourlabs/django-cities-light
+
+CITIES_LIGHT_TRANSLATION_LANGUAGES = ["es", "en"]
+CITIES_LIGHT_INCLUDE_COUNTRIES = ["PE"]
 
 # Django Allauth settings
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
