@@ -25,3 +25,16 @@ class MonthChoices(models.IntegerChoices):
     OCTOBER = 10, _("October")
     NOVEMBER = 11, _("November")
     DECEMBER = 12, _("December")
+
+
+class DocumentType(models.TextChoices):
+    DOCUMENT = "DNI", _("National Identity Document")
+    RUC = "RUC", _("Unique Taxpayer Registry")
+    PASSPORT = "PASSPORT", _("Passport")
+    FOREIGN_ID = "FOREIGN_ID", _("Foreigner ID")
+
+
+class Gender(models.TextChoices):
+    MALE = "M", _("Male")
+    FEMALE = "F", _("Female")
+    OTHER = "O", _("Other")

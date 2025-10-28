@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 
 from apps.users.managers import CustomUserManager
@@ -19,3 +20,11 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    @cached_property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @cached_property
+    def is_account(self):
+        return hasattr(self, "account")

@@ -39,7 +39,7 @@
 
 1. **Get Location Information**
 ```bash
-   python manage.py cities_light
+   python manage.py loaddata apps/core/fixtures/ubigeo_data.json
 ```
 
 ## Coverage

@@ -3,8 +3,8 @@
 {% load i18n %}
 {% load widget_tweaks %}
 
-{% block title_page%} Accounts{% endblock title_page %}
-{% block toolbar_title %}{{ entity }} Form{% endblock%}
+{% block title_page%}Accounts{% endblock title_page %}
+{% block toolbar_title %}{{ entity }}{% endblock%}
 
 {% block content %}
 <main class="container-xxl">
@@ -14,7 +14,7 @@
             <div class="card card-flush py-4">
                 <div class="card-header">
                     <div class="card-title">
-                        <h2>Avatar</h2>
+                        <h2>{% trans 'Avatar' %}</h2>
                     </div>
                 </div>
                 <div class="card-body text-center pt-0">
@@ -49,7 +49,9 @@
                             </i>
                         </span>
                     </div>
-                    <div class="text-muted fs-7">Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted</div>
+                    <div class="text-muted fs-7">
+                        {% trans 'Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted' %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,56 +100,6 @@
                                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
                                         {{ form.email.errors }}
                                     </div>
-                                </div>
-                            </div>
-
-                            {% if request.user.is_superuser or request.user.is_staff %}
-                                <div class="row mb-6">
-                                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">
-                                        {{ form.is_organization.label }}
-                                    </label>
-
-                                    <div class="col-lg-4 fv-row d-flex align-items-center">
-                                        {% render_field form.is_organization class="form-check-input" %}
-                                        <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                            {{ form.is_organization.errors }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-6">
-                                    <label class="col-lg-4 col-form-label required fw-semibold fs-6">
-                                        {{ form.parent_account.label }}
-                                    </label>
-
-                                    <div class="col-lg-6 fv-row d-flex align-items-center">
-                                        {% render_field form.parent_account class="form-select" %}
-                                        <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                            {{ form.parent_account.errors }}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endif %}
-
-                            <div class="row mb-6">
-                                <label class="col-lg-4 col-form-label required fw-semibold fs-6">
-                                    {{ form.user_type.label }}
-                                </label>
-
-                                <div class="col-lg-8 fv-row fv-plugins-icon-container pt-12">
-                                    {% with field=form.user_type %}
-                                        {% for radio in field %}
-                                            <div class="form-check mb-4">
-                                                {{ radio.tag }}
-                                                <label class="form-check-label" for="{{ radio.id_for_label }}">
-                                                    {{ radio.choice_label }}
-                                                </label>
-                                            </div>
-                                        {% endfor %}
-                                        <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                            {{ form.user_type.errors }}
-                                        </div>
-                                    {% endwith %}
                                 </div>
                             </div>
                         </div>
@@ -201,106 +153,6 @@
                                         </td>
                                     </tr>
                                 {% endif %}
-
-                                <!-- Patients -->
-                                <tr>
-                                    <td class="fw-bold">{% trans "Patients" %}</td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_view_patient class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_add_patient class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_change_patient class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_delete_patient class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Medical Tests -->
-                                <tr>
-                                    <td class="fw-bold">{% trans "Medical Tests" %}</td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_view_medicaltest class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_add_medicaltest class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_change_medicaltest class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_delete_medicaltest class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Panels -->
-                                <tr>
-                                    <td class="fw-bold">{% trans "Panels" %}</td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_view_panel class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_add_panel class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_change_panel class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_delete_panel class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <!-- Orders -->
-                                <tr>
-                                    <td class="fw-bold">{% trans "Orders" %}</td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_view_order class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_add_order class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_change_order class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="form-check form-check-custom form-check-solid justify-content-center">
-                                            {% render_field form.can_delete_order class="form-check-input" %}
-                                        </div>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -308,33 +160,12 @@
             </div>
 
             <div class="card-footer d-flex justify-content-end py-6 px-9">
-                <button class="btn btn-light btn-active-light-primary me-2">{% trans "Discard" %}</button>
+                <a href="{{ back_url }}" class="btn btn-light btn-active-light-primary me-2">
+                    {% trans "Discard" %}
+                </a>
                 <button class="btn btn-primary  px-6">{% trans "Save Changes" %}</button>
             </div>
         </div>
     </form>
 </main>
 {% endblock content %}
-
-
-{% block extra_js %}
-<script>
-    $(document).ready(function() {
-        $('#id_parent_account').select2({
-            allowClear: true, closeOnSelect: false
-        });
-        $('#id_is_organization').change(function() {
-            const isOrganization = $(this).prop('checked');
-            if (isOrganization) {
-                $('input[name="user_type"][value="7"]').prop('checked', true);
-                $('input[name="user_type"]').prop('disabled', true);
-                $('#id_parent_account').prop('disabled', 'disabled');
-                $('#account-permissions-row').removeClass('d-none');
-            } else {
-                $('input[name="user_type"]').prop('disabled', false);
-                $('#id_parent_account').prop('disabled', false);
-            }
-        });
-    });
-</script>
-{% endblock extra_js %}

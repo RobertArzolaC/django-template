@@ -12,6 +12,7 @@ class Command(BaseCommand):
         superuser_data = {
             "email": "admin@example.com",
             "first_name": "Administrator",
+            "last_name": "Principal",
             "is_staff": True,
             "is_superuser": True,
         }
@@ -31,7 +32,7 @@ class Command(BaseCommand):
             },
         ]
 
-        default_password = "qaz.123"
+        default_password = "holamundo"
         users_created = 0
         users_existed = 0
 
@@ -39,12 +40,16 @@ class Command(BaseCommand):
         if superuser:
             users_created += 1
             self.stdout.write(
-                self.style.SUCCESS(f"Superuser created successfully: {superuser.email}")
+                self.style.SUCCESS(
+                    f"Superuser created successfully: {superuser.email}"
+                )
             )
         else:
             users_existed += 1
             self.stdout.write(
-                self.style.WARNING(f"Superuser already exists: {superuser_data['email']}")
+                self.style.WARNING(
+                    f"Superuser already exists: {superuser_data['email']}"
+                )
             )
 
         for staff_data in staff_users_data:
@@ -75,11 +80,12 @@ class Command(BaseCommand):
         )
 
     def create_user(self, user_data, password):
-        email = user_data.pop("email")
-
+        email = user_data.get("email")
         user = User.objects.filter(email=email).first()
         if not user:
-            user = User.objects.create_user(email=email, password=password, **user_data)
+            user = User.objects.create_user(
+                email=email, password=password, **user_data
+            )
 
             EmailAddress.objects.get_or_create(
                 user=user,

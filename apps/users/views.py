@@ -51,7 +51,9 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
         try:
             user = request.user
 
-            user_form = forms.UserSettingsForm(request.POST, request.FILES, instance=user)
+            user_form = forms.UserSettingsForm(
+                request.POST, request.FILES, instance=user
+            )
             if user_form.is_valid():
                 user_form.save()
 

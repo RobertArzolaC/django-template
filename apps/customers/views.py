@@ -1,5 +1,8 @@
 from constance import config
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -20,18 +23,15 @@ class AccountListView(
     context_object_name = "accounts"
     paginate_by = 5
 
-    def get_queryset(self):
-        if self.request.user.is_organization:
-            return models.Account.objects.filter(parent_account=self.request.user.account)
-        return models.Account.objects.all()
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["config"] = config
         context["entity"] = _("Account")
         context["entity_plural"] = _("Accounts")
         context["back_url"] = reverse_lazy("apps.dashboard:index")
-        context["add_entity_url"] = reverse_lazy("apps.customers:account_create")
+        context["add_entity_url"] = reverse_lazy(
+            "apps.customers:account_create"
+        )
 
         return context
 
