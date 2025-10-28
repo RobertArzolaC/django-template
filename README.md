@@ -51,7 +51,12 @@
 
 2. **Generate report**
    ```bash
-   coverage report -m
+   coverage report --sort=cover
+   ```
+
+3. **Generate HTML report**
+   ```bash
+   coverage html
    ```
 
 ## Linting
