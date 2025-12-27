@@ -8,7 +8,7 @@
 
 {% block content %}
 <main class="container-xxl">
-    <form class="form d-flex flex-column flex-lg-row" method="post" enctype="multipart/form-data" action="{% if form.instance.pk %}{% url 'apps.customers:account_update' form.instance.pk %}{% else %}{% url 'apps.customers:account_create' %}{% endif %}">
+    <form class="form d-flex flex-column flex-lg-row" method="post" enctype="multipart/form-data" action="{% if form.instance.pk %}{% url 'apps.users:account_update' form.instance.pk %}{% else %}{% url 'apps.users:account_create' %}{% endif %}">
         {% csrf_token %}
         <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
             <div class="card card-flush py-4">

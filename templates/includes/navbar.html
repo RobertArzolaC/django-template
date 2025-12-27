@@ -120,7 +120,7 @@
                         </div>
                         {% if request.user.is_superuser or request.user.is_staff %}
                             <div class="menu-item px-5">
-                                <a href="{% url "apps.customers:account_list" %}" class="menu-link px-5">
+                                <a href="{% url "apps.users:account_list" %}" class="menu-link px-5">
                                     {% trans "Accounts" %}
                                 </a>
                             </div>

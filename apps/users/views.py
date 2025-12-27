@@ -1,13 +1,17 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import TemplateView, View
+from django.views.generic import FormView, TemplateView, UpdateView, View
+from django_filters.views import FilterView
 
-from apps.customers import forms as customer_forms
-from apps.users import forms
+from apps.core import mixins as core_mixins
+from apps.users import filtersets, forms, models
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -37,7 +41,7 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
         }
 
         if user.is_account:
-            context["account_form"] = customer_forms.AccountSettingsForm(
+            context["account_form"] = forms.AccountSettingsForm(
                 instance=user.account
             )
 
@@ -58,7 +62,7 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
                 user_form.save()
 
             if user.is_account:
-                customer_form = customer_forms.AccountSettingsForm(
+                customer_form = forms.AccountSettingsForm(
                     request.POST, request.FILES, instance=user.account
                 )
 
@@ -71,3 +75,70 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
             messages.error(request, f"Error updating settings: {str(e)}")
 
         return render(request, self.template_name, self.get_context_data())
+
+
+class AccountListView(
+    PermissionRequiredMixin, FilterView, LoginRequiredMixin, SuccessMessageMixin
+):
+    model = models.Account
+    permission_required = "users.view_account"
+    filterset_class = filtersets.AccountFilter
+    template_name = "users/account/list.html"
+    context_object_name = "accounts"
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["entity"] = _("Account")
+        context["entity_plural"] = _("Accounts")
+        context["back_url"] = reverse_lazy("apps.dashboard:index")
+        context["add_entity_url"] = reverse_lazy("apps.users:account_create")
+
+        return context
+
+
+class AccountCreateView(
+    PermissionRequiredMixin, FormView, LoginRequiredMixin, SuccessMessageMixin
+):
+    form_class = forms.AccountCreationForm
+    permission_required = "users.add_account"
+    template_name = "users/account/form.html"
+    success_message = _("Account created successfully")
+    success_url = reverse_lazy("apps.users:account_list")
+
+    def form_valid(self, form):
+        form.save(self.request)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["entity"] = _("Account")
+        context["back_url"] = reverse_lazy("apps.users:account_list")
+        return context
+
+
+class AccountUpdateView(
+    PermissionRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView
+):
+    model = models.Account
+    context_object_name = "account"
+    form_class = forms.AccountUpdateForm
+    template_name = "users/account/form.html"
+    permission_required = "users.change_account"
+    success_message = _("Account updated successfully")
+    success_url = reverse_lazy("apps.users:account_list")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["entity"] = _("Account")
+        context["back_url"] = reverse_lazy("apps.users:account_list")
+        return context
+
+
+class AccountDeleteView(core_mixins.AjaxDeleteViewMixin):
+    model = models.Account

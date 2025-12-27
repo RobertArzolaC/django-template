@@ -3,7 +3,6 @@ import logging
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from apps.customers import models as customer_models
 from apps.users import models
 
 logger = logging.getLogger(__name__)
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 def create_user_account(sender, instance, created, **kwargs):
     if created:
         try:
-            customer_models.Account.objects.create(user=instance)
+            models.Account.objects.create(user=instance)
             logger.info(
                 f"Cuenta creada automáticamente para el usuario: {instance.email}"
             )
