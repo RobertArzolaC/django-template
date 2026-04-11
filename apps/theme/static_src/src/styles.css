@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-outfit: "Outfit", sans-serif;
 
@@ -33,6 +35,16 @@
   --color-whiter: #F5F7FD;
   --color-boxdark: #24303F;
   --color-boxdark-2: #1A222C;
+
+  --color-meta-1: #FB5454;
+  --color-meta-2: #EFF4FB;
+  --color-meta-3: #219653;
+  --color-meta-4: #313D4A;
+  --color-meta-5: #259AE6;
+  --color-meta-6: #FFBA00;
+  --color-meta-7: #FF6766;
+  --color-meta-8: #F0950C;
+  --color-meta-9: #E5E7EB;
   
   --color-success: #12b76a;
   --color-success-500: #12b76a;

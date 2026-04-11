@@ -17,7 +17,7 @@
 
     <!-- Theme Initializer (Avoid Flicker) -->
     <script>
-        if (localStorage.getItem('darkMode') === 'true' || 
+        if (localStorage.getItem('darkMode') === 'true' ||
             (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -29,25 +29,22 @@
     <style>
         /* Sidebar Collapse Transitions */
         #sidebar { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar-collapsed #sidebar { width: 5rem !important; }
-        .menu-item span { transition: opacity 0.3s ease; }
-        .collapsed .menu-item span { opacity: 0; pointer-events: none; }
     </style>
     {% block extra_css %}{% endblock extra_css %}
 </head>
 
 <body class="bg-whiten dark:bg-boxdark-2 text-body dark:text-bodydark transition-colors duration-300">
-    
+
     <!-- ===== Page Wrapper Start ===== -->
     <div class="flex h-screen overflow-hidden">
-        
+
         <!-- ===== Sidebar Start ===== -->
         {% include 'includes/aside.html' %}
         <!-- ===== Sidebar End ===== -->
 
         <!-- ===== Content Area Start ===== -->
         <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-            
+
             <!-- ===== Header Start ===== -->
             {% include 'includes/navbar.html' %}
             <!-- ===== Header End ===== -->
@@ -73,7 +70,7 @@
             </main>
             <!-- ===== Main Content End ===== -->
 
-            {% include 'includes/footer.html' %}
+            <!-- {% include 'includes/footer.html' %} -->
         </div>
         <!-- ===== Content Area End ===== -->
     </div>
@@ -112,7 +109,7 @@
             });
         });
     </script>
-    
+
     {% block extra_js %}{% endblock extra_js %}
 </body>
 </html>
