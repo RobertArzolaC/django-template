@@ -4,407 +4,203 @@
 {% load widget_tweaks %}
 {% load breadcrumb_tags %}
 
-{% block title_page%}
-    Accounts
+{% block title_page %}
+    {% trans 'Accounts' %}
 {% endblock title_page %}
 
 {% block toolbar_title %}
     {{ entity_plural }}
-{% endblock%}
+{% endblock %}
 
 {% block entity_options %}
-<div class="d-flex align-items-center flex-nowrap text-nowrap py-1">
     {% if perms.users.add_account %}
-        <a href="{{ add_entity_url }}" class="btn btn-primary">
+        <a href="{{ add_entity_url }}" class="btn btn-primary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
             {% trans 'Add Account' %}
         </a>
     {% endif %}
-</div>
 {% endblock %}
 
 {% block content %}
-<main class="container-xxl">
-    <div class="card card-flush">
-        <div class="card-header align-items-center py-5 gap-2 gap-md-5">
-            <form method="get" class="card-title">
-                <div class="d-flex align-items-center position-relative my-1">
-                    <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    {% render_field filter.form.name_search class="form-control w-250px ps-12" placeholder="Search Name or Email" %}
-                </div>
-                <div class="w-100 ms-4">
-                    {% render_field filter.form.is_active class="form-select"%}
-                </div>
-                {% if request.user.is_superuser or request.user.is_staff %}
-                    <div class="w-100 ms-4">
-                        {% render_field filter.form.is_organization class="form-select"%}
+<div class="card bg-base-100 shadow-xl border border-base-200">
+    <div class="card-body p-0">
+        <!-- Filter Header -->
+        <div class="p-6 border-b border-base-200">
+            <form method="get" class="flex flex-wrap items-end gap-4">
+                <div class="form-control">
+                    <label class="label"><span class="label-text text-xs uppercase opacity-60">{% trans "Search" %}</span></label>
+                    <div class="join">
+                        <div class="join-item bg-base-200 flex items-center px-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 opacity-50">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </div>
+                        {% render_field filter.form.name_search class="input input-bordered input-sm join-item w-full md:w-64" placeholder="Name or Email..." %}
                     </div>
+                </div>
+                
+                <div class="form-control">
+                    <label class="label"><span class="label-text text-xs uppercase opacity-60">{% trans "Status" %}</span></label>
+                    {% render_field filter.form.is_active class="select select-bordered select-sm w-full md:w-40" %}
+                </div>
+
+                {% if request.user.is_superuser or request.user.is_staff %}
+                <div class="form-control">
+                    <label class="label"><span class="label-text text-xs uppercase opacity-60">{% trans "Organization" %}</span></label>
+                    {% render_field filter.form.is_organization class="select select-bordered select-sm w-full md:w-40" %}
+                </div>
                 {% endif %}
-                <button type="submit" class="btn btn-light-primary ms-4 d-flex">
-                    <span class="svg-icon svg-icon-2 me-1">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor"></path>
-                        </svg>
-                    </span>
+
+                <button type="submit" class="btn btn-primary btn-sm px-6">
                     {% trans "Filter" %}
                 </button>
             </form>
         </div>
 
-        <div class="card-body pt-0">
-            <div class="dataTables_wrapper dt-bootstrap4 no-footer">
-                <div class="table-responsive">
-                    <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer">
-                        <thead>
-                            <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                                <th
-                                    class="min-w-200px sorting"
-                                    tabindex="0"
-                                    aria-controls="kt_ecommerce_products_table"
-                                    rowspan="1"
-                                    colspan="1"
-                                    aria-label="Product: activate to sort column ascending"
-                                    style="width: 274.367px"
-                                >
-                                    {% trans 'Full Name' %}
-                                </th>
-                                <th
-                                    class="text-end min-w-100px sorting"
-                                    tabindex="0"
-                                    aria-controls="kt_ecommerce_products_table"
-                                    rowspan="1"
-                                    colspan="1"
-                                    aria-label="SKU: activate to sort column ascending"
-                                    style="width: 138.914px"
-                                >
-                                    {% trans 'Email' %}
-                                </th>
-                                <th
-                                    class="text-end min-w-100px sorting"
-                                    tabindex="0"
-                                    aria-controls="kt_ecommerce_products_table"
-                                    rowspan="1"
-                                    colspan="1"
-                                    aria-label="Price: activate to sort column ascending"
-                                    style="width: 138.914px"
-                                >
-                                    {% trans 'Status' %}
-                                </th>
-                                <th
-                                    class="text-end min-w-100px sorting"
-                                    tabindex="0"
-                                    aria-controls="kt_ecommerce_products_table"
-                                    rowspan="1"
-                                    colspan="1"
-                                    aria-label="Price: activate to sort column ascending"
-                                    style="width: 138.914px"
-                                >
-                                    {% trans 'Verified' %}
-                                </th>
-                                {% if request.user.is_superuser or request.user.is_staff %}
-                                    <th
-                                        class="text-end min-w-100px sorting"
-                                        tabindex="0"
-                                        aria-controls="kt_ecommerce_products_table"
-                                        rowspan="1"
-                                        colspan="1"
-                                        aria-label="Price: activate to sort column ascending"
-                                        style="width: 138.914px"
-                                    >
-                                        {% trans 'Is Organization' %}
-                                    </th>
-                                    <th
-                                        class="text-end min-w-100px sorting"
-                                        tabindex="0"
-                                        rowspan="1"
-                                        colspan="1"
-                                        style="width: 138.914px"
-                                    >
-                                        {% trans 'Is Child Account' %}
-                                    </th>
-                                {% endif %}
-                                <th
-                                    class="text-end min-w-70px sorting_disabled"
-                                    rowspan="1"
-                                    colspan="1"
-                                    aria-label="Actions"
-                                    style="width: 141.484px"
-                                >
-                                    {% trans 'Actions' %}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="fw-semibold text-gray-600">
-                            {% for account in accounts %}
-                                <tr class="odd">
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <a href="{% if perms.users.change_account %}{% url "apps.users:account_update" account.pk %}{% endif %}" class="symbol symbol-50px">
-                                                <span
-                                                    class="symbol-label"
-                                                    style="background-image: url({% if account.user.avatar %}{{account.user.avatar.url}}{% else %}{% static 'assets/media/svg/files/blank-image.svg' %}{% endif %});"
-                                                ></span>
-                                            </a>
-
-                                            <div class="ms-5">
-                                                <a
-                                                    href="{% if perms.users.change_account %}{% url "apps.users:account_update" account.pk %}{% endif %}"
-                                                    class="text-gray-800 text-hover-primary fs-5 fw-bold"
-                                                    data-kt-ecommerce-product-filter="product_name"
-                                                >
-                                                    {{ account.full_name }}
-                                                </a>
-                                            </div>
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+                <thead>
+                    <tr class="text-xs uppercase opacity-60">
+                        <th>{% trans 'Account' %}</th>
+                        <th>{% trans 'Email' %}</th>
+                        <th>{% trans 'Status' %}</th>
+                        <th>{% trans 'Verified' %}</th>
+                        {% if request.user.is_superuser or request.user.is_staff %}
+                            <th>{% trans 'Org?' %}</th>
+                            <th>{% trans 'Child?' %}</th>
+                        {% endif %}
+                        <th class="text-right">{% trans 'Actions' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for account in accounts %}
+                        <tr class="hover">
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="avatar">
+                                        <div class="mask mask-squircle w-10 h-10 bg-base-200">
+                                            <img src="{% if account.user.avatar %}{{account.user.avatar.url}}{% else %}{% static 'assets/media/svg/files/blank-image.svg' %}{% endif %}" alt="Avatar" />
                                         </div>
-                                    </td>
-                                    <td class="text-end pe-0">
-                                        <span class="fw-bold">
-                                            {{ account.user.email }}
-                                        </span>
-                                    </td>
-                                    <td class="text-end pe-0" data-order="Inactive">
-                                        {% if account.user.is_active %}
-                                            <div class="badge badge-light-success">
-                                                {% trans 'Active' %}
-                                            </div>
-                                        {% else %}
-                                            <div class="badge badge-light-danger">
-                                                {% trans 'Inactive' %}
-                                            </div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">
+                                            <a href="{% if perms.users.change_account %}{% url "apps.users:account_update" account.pk %}{% endif %}" class="link link-hover">
+                                                {{ account.full_name }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="text-sm opacity-70">{{ account.user.email }}</span></td>
+                            <td>
+                                {% if account.user.is_active %}
+                                    <span class="badge badge-success badge-sm">{% trans 'Active' %}</span>
+                                {% else %}
+                                    <span class="badge badge-error badge-sm">{% trans 'Inactive' %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if account.is_email_verified %}
+                                    <span class="badge badge-info badge-outline badge-sm">{% trans "Yes" %}</span>
+                                {% else %}
+                                    <span class="badge badge-warning badge-outline badge-sm">{% trans "No" %}</span>
+                                {% endif %}
+                            </td>
+                            {% if request.user.is_superuser or request.user.is_staff %}
+                                <td>{% if account.is_organization %}<span class="badge badge-ghost badge-sm">{% trans "Yes" %}</span>{% else %}-{% endif %}</td>
+                                <td>{% if account.is_child_account %}<span class="badge badge-ghost badge-sm">{% trans "Yes" %}</span>{% else %}-{% endif %}</td>
+                            {% endif %}
+                            <td class="text-right whitespace-nowrap">
+                                <div class="dropdown dropdown-left">
+                                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                        </svg>
+                                    </div>
+                                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40 border border-base-200">
+                                        {% if perms.users.change_account %}
+                                            <li><a href="{% url "apps.users:account_update" account.pk %}">{% trans 'Edit' %}</a></li>
                                         {% endif %}
-                                    </td>
-                                    <td class="text-end pe-0" data-order="Inactive">
-                                        {% if account.is_email_verified %}
-                                            <div class="badge badge-light-success">
-                                                {% trans "Yes" %}
-                                            </div>
-                                        {% else %}
-                                            <div class="badge badge-light-danger">
-                                                {% trans "No" %}
-                                            </div>
+                                        <li><a href="#" class="toggle-user-status" data-user-id="{{ account.user.id }}" data-action="{% if account.user.is_active %}deactivate{% else %}activate{% endif %}">
+                                            {% if account.user.is_active %}{% trans 'Deactivate' %}{% else %}{% trans 'Activate' %}{% endif %}
+                                        </a></li>
+                                        {% if not account.is_email_verified and config.ENABLE_VERIFICATION_EMAIL %}
+                                            <li><a href="#" class="verify-account text-info" data-user-id="{{ account.user.id }}">{% trans "Verify" %}</a></li>
                                         {% endif %}
-                                    </td>
-                                    {% if request.user.is_superuser or request.user.is_staff %}
-                                        <td class="text-end pe-0">
-                                            {% if account.is_organization %}
-                                                <div class="badge badge-light-success">
-                                                    {% trans "Yes" %}
-                                                </div>
-                                            {% else %}
-                                                <div class="badge badge-light-danger">
-                                                    {% trans "No" %}
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-end pe-0">
-                                            {% if account.is_child_account %}
-                                                <div class="badge badge-light-success">
-                                                    {% trans "Yes" %}
-                                                </div>
-                                            {% else %}
-                                                <div class="badge badge-light-danger">
-                                                    {% trans "No" %}
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                    {% endif %}
-                                    <td class="text-end">
-                                        <a
-                                            href="#"
-                                            class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary"
-                                            data-kt-menu-trigger="click"
-                                            data-kt-menu-placement="bottom-end"
-                                        >
+                                        {% if perms.users.delete_account %}
+                                            <li><a href="#" class="delete-account text-error" data-account-id="{{ account.pk }}">{% trans 'Delete' %}</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-                                            {% trans 'Actions' %}
-                                            <i class="ki-duotone ki-down fs-5 ms-1"></i>
-                                        </a>
-                                        {% if perms.users.change_account or perms.users.delete_account %}
-                                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
-                                                {% if perms.users.delete_account %}
-                                                    <div class="menu-item px-3">
-                                                        <a href="#" class="menu-link px-3 delete-account" data-account-id="{{ account.pk }}">
-                                                            {% trans 'Delete' %}
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-
-                                                <div class="menu-item px-3">
-                                                    <a href="#" class="menu-link px-3 toggle-user-status" data-user-id="{{ account.user.id }}" data-action="{% if account.user.is_active %}deactivate{% else %}activate{% endif %}">
-                                                        {% if account.user.is_active %}
-                                                            {% trans 'Desactivate' %}
-                                                        {% else %}
-                                                            {% trans 'Activate' %}
-                                                        {% endif %}
-                                                    </a>
-                                                </div>
-                                                {% if perms.users.change_account %}
-                                                    <div class="menu-item px-3">
-                                                        <a href="{% url "apps.users:account_update" account.pk %}" class="menu-link px-3">
-                                                            {% trans 'Edit' %}
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                                {% if not account.is_email_verified and config.ENABLE_VERIFICATION_EMAIL %}
-                                                    <div class="menu-item px-3">
-                                                        <a href="#" class="menu-link px-3 verify-account" data-user-id="{{ account.user.id }}">
-                                                            {% trans "Verify" %}
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% if is_paginated %}{% include "includes/pagination.html" %} {% endif %}
-            </div>
+        <!-- Pagination -->
+        <div class="p-6">
+            {% if is_paginated %}{% include "includes/pagination.html" %} {% endif %}
         </div>
     </div>
-</main>
+</div>
 {% endblock content %}
 
 {% block extra_js %}
 <script>
+    async function handleAction(button, url, data, successMsg) {
+        if (!confirm('{% trans "Are you sure?" %}')) return;
+        
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data)
+            });
+            
+            if (response.ok) {
+                showAlert('{% trans "Success" %}', successMsg, 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                throw new Error('Action failed');
+            }
+        } catch (error) {
+            showAlert('{% trans "Error" %}', '{% trans "There was a problem processing your request." %}', 'error');
+        }
+    }
+
     document.querySelectorAll('.verify-account').forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', (e) => {
             e.preventDefault();
-            const userId = this.getAttribute('data-user-id');
-            console.log("userId", userId);
-
-            Swal.fire({
-                title: '{% trans "Are you sure?" %}',
-                text: '',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '{% trans "Yes, delete it!" %}',
-                cancelButtonText: '{% trans "Cancel" %}'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{% url "apps.users:verify_email_api" %}',
-                        type: 'POST',
-                        data: { user_id: userId },
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        success: function(response) {
-                            Swal.fire(
-                                '{% trans "Successfully verified account." %}',
-                                '{% trans "The user has been verified." %}',
-                                'success'
-                            ).then(() => {
-                                location.reload();
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire(
-                                '{% trans "Error!" %}',
-                                '{% trans "There was a problem verifying the account." %}',
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
+            handleAction(button, '{% url "apps.users:verify_email_api" %}', 
+                { user_id: button.getAttribute('data-user-id') },
+                '{% trans "The user has been verified." %}'
+            );
         });
     });
+
     document.querySelectorAll('.delete-account').forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', (e) => {
             e.preventDefault();
-            const accountId = this.getAttribute('data-account-id');
-
-            Swal.fire({
-                title: '{% trans "Are you sure?" %}',
-                text: '',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '{% trans "Yes, delete it!" %}',
-                cancelButtonText: '{% trans "Cancel" %}'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Send DELETE request
-                    fetch(`/users/accounts/${accountId}/delete/`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                    }).then(response => {
-                        if (response.ok) {
-                            Swal.fire(
-                                '{% trans "Deleted!" %}',
-                                '{% trans "The account has been deleted." %}',
-                                'success'
-                            ).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire(
-                                '{% trans "Error!" %}',
-                                '{% trans "There was a problem deleting the account." %}',
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
+            const id = button.getAttribute('data-account-id');
+            handleAction(button, `/users/accounts/${id}/delete/`, {}, '{% trans "The account has been deleted." %}');
         });
     });
-    document.querySelectorAll('.toggle-user-status').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const userId = this.getAttribute('data-user-id');
-            const action = this.getAttribute('data-action');
 
-            Swal.fire({
-                title: '{% trans "Are you sure?" %}',
-                text: '',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: '{% trans "Yes, activate it!" %}',
-                cancelButtonText: '{% trans "Cancel" %}'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/users/api/toggle-user-status/',
-                        type: 'POST',
-                        data: {
-                            user_id: userId,
-                            action: action
-                        },
-                        headers: {
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        success: function(response) {
-                            Swal.fire(
-                                '{% trans "Successfully activated/deactivated user." %}',
-                                '{% trans "The user has been activated/deactivated." %}',
-                                'success'
-                            ).then(() => {
-                                location.reload();
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire(
-                                '{% trans "Error!" %}',
-                                '{% trans "There was a problem activating/deactivating the user." %}',
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
+    document.querySelectorAll('.toggle-user-status').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleAction(button, '/users/api/toggle-user-status/', 
+                { user_id: button.getAttribute('data-user-id'), action: button.getAttribute('data-action') },
+                '{% trans "Status updated successfully." %}'
+            );
         });
     });
 </script>

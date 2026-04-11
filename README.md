@@ -35,6 +35,11 @@
    python manage.py runserver
    ```
 
+8. **Start Tailwind (Development)**
+   ```bash
+   python manage.py tailwind start
+   ```
+
 ## Location Information
 
 1. **Get Location Information**

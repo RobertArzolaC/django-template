@@ -6,16 +6,26 @@
 {% block toolbar_title %}Dashboard{% endblock %}
 
 {% block content %}
-<main class="container-xxl">
-  <div class="row">
-    <div class="text-end mb-4">
-      <small class="text-muted">
-          {% trans "Last updated" %}: {{ last_updated|date:"Y-m-d H:i" }}
-      </small>
+<div class="flex flex-col gap-6">
+    <div class="flex justify-end">
+        <span class="text-xs opacity-50 italic">
+            {% trans "Last updated" %}: {{ last_updated|date:"Y-m-d H:i" }}
+        </span>
     </div>
-  </div>
-  <div class="row g-xl-8">
 
-  </div>
-</main>
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Hero Section or welcome message -->
+        <div class="hero bg-base-100 rounded-box shadow-xl border border-base-200">
+            <div class="hero-content text-center py-12">
+                <div class="max-w-md">
+                    <h1 class="text-3xl font-bold">{% trans "Welcome to your Dashboard" %}</h1>
+                    <p class="py-6 opacity-70">
+                        {% trans "Manage your laboratory processes, track samples and validate results from one central place." %}
+                    </p>
+                    <a href="{% url 'apps.users:account_list' %}" class="btn btn-primary">{% trans "Get Started" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

@@ -2,195 +2,125 @@
 {% load static %}
 {% load i18n %}
 
-{% block title_page %}{{ entity }}{% endblock title_page %}
-{% block toolbar_title %}{{ entity }}{% endblock %}
+{% block title_page %}{{ user.get_full_name }}{% endblock title_page %}
+{% block toolbar_title %}{{ user.get_full_name }}{% endblock %}
 
 {% block content %}
-<main class="container-xxl">
-    <div class="d-flex flex-column gap-7 gap-lg-10">
-        <!-- Profile Overview Card -->
-        <div class="card">
-            <div class="card-body p-9">
-                <div class="d-flex flex-wrap flex-sm-nowrap">
-                    <!-- Avatar -->
-                    <div class="me-7 mb-4">
-                        <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
-                            {% if user.avatar %}
-                                <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" />
-                            {% else %}
-                                <div class="symbol-label fs-2 fw-semibold text-primary bg-light-primary">
-                                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
-                                </div>
-                            {% endif %}
-                        </div>
+<div class="flex flex-col gap-8">
+    <!-- Profile Overview Card -->
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body">
+            <div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                <div class="avatar">
+                    <div class="w-32 h-32 rounded-xl ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden bg-base-200 shadow-lg">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="{{ user.get_full_name }}" />
+                        {% else %}
+                            <div class="bg-primary text-primary-content flex items-center justify-center text-4xl font-bold h-full">
+                                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                            </div>
+                        {% endif %}
                     </div>
+                </div>
 
-                    <!-- User Info -->
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
-                            <div class="d-flex flex-column">
-                                <div class="d-flex align-items-center mb-2">
-                                    <span class="text-gray-900 fs-2 fw-bold me-1">
-                                        {{ user.get_full_name }}
-                                    </span>
-                                    {% if user.is_active %}
-                                        <i class="ki-duotone ki-verify fs-1 text-primary">
-                                            <span class="path1"></span>
-                                            <span class="path2"></span>
-                                        </i>
-                                    {% endif %}
-                                </div>
-
-                                <div class="d-flex flex-wrap fw-semibold fs-6 mb-4 pe-2">
-                                    <span class="d-flex align-items-center text-gray-500 me-5 mb-2">
-                                        <i class="ki-duotone ki-profile-circle fs-4 me-1">
-                                            <span class="path1"></span>
-                                            <span class="path2"></span>
-                                            <span class="path3"></span>
-                                        </i>
-                                        {{ user.get_user_type_display }}
-                                    </span>
-
-                                    <span class="d-flex align-items-center text-gray-500 me-5 mb-2">
-                                        <i class="ki-duotone ki-sms fs-4 me-1">
-                                            <span class="path1"></span>
-                                            <span class="path2"></span>
-                                        </i>
-                                        {{ user.email }}
-                                    </span>
-
-                                    {% if user.is_account and user.account %}
-                                        <span class="d-flex align-items-center text-gray-500 mb-2">
-                                            <i class="ki-duotone ki-geolocation fs-4 me-1">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                            </i>
-                                            {% if user.account.is_organization %}
-                                                {% trans "Organization" %}
-                                            {% else %}
-                                                {% trans "Individual" %}
-                                            {% endif %}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <div class="d-flex my-4">
-                                <a href="{% url 'apps.users:settings' %}" class="btn btn-sm btn-primary me-3">
-                                    {% trans "Edit Profile" %}
-                                </a>
+                <div class="flex-grow text-center md:text-left">
+                    <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold flex items-center gap-2 justify-center md:justify-start">
+                                {{ user.get_full_name }}
+                                {% if user.is_active %}
+                                    <div class="badge badge-primary badge-sm">{% trans "Active" %}</div>
+                                {% endif %}
+                            </h2>
+                            <div class="flex flex-wrap gap-4 mt-2 justify-center md:justify-start opacity-70">
+                                <span class="flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                    </svg>
+                                    {{ user.get_user_type_display }}
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                                    </svg>
+                                    {{ user.email }}
+                                </span>
                             </div>
                         </div>
+                        <a href="{% url 'apps.users:settings' %}" class="btn btn-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                            </svg>
+                            {% trans "Edit Profile" %}
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Account Details Card -->
+    <!-- Info Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Account Information -->
         {% if user.is_account and user.account %}
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <h3 class="fw-bold m-0">{% trans "Account Information" %}</h3>
-                </div>
-            </div>
-            <div class="card-body p-9">
-                <div class="row mb-7">
-                    <label class="col-lg-4 fw-semibold text-muted">{% trans "Account Type" %}</label>
-                    <div class="col-lg-8">
-                        <span class="fw-bold fs-6 text-gray-900">
+        <div class="card bg-base-100 shadow-xl border border-base-200">
+            <div class="card-body">
+                <h3 class="card-title border-b border-base-200 pb-2 mb-4 text-lg">{% trans "Account Information" %}</h3>
+                <div class="flex flex-col gap-4">
+                    <div class="flex justify-between items-center">
+                        <span class="opacity-60 text-sm">{% trans "Account Type" %}</span>
+                        <span class="font-semibold">
                             {% if user.account.is_organization %}
-                                <span class="badge badge-light-primary">{% trans "Organization" %}</span>
+                                <div class="badge badge-primary badge-outline">{% trans "Organization" %}</div>
                             {% else %}
-                                <span class="badge badge-light-info">{% trans "Individual" %}</span>
+                                <div class="badge badge-info badge-outline">{% trans "Individual" %}</div>
                             {% endif %}
                         </span>
                     </div>
-                </div>
-
-                {% if user.account.parent_account %}
-                <div class="row mb-7">
-                    <label class="col-lg-4 fw-semibold text-muted">{% trans "Parent Account" %}</label>
-                    <div class="col-lg-8 fv-row">
-                        <span class="fw-semibold text-gray-900 fs-6">
-                            {{ user.account.parent_account.user.get_full_name }}
-                        </span>
+                    {% if user.account.parent_account %}
+                    <div class="flex justify-between items-center">
+                        <span class="opacity-60 text-sm">{% trans "Parent Account" %}</span>
+                        <span class="font-semibold">{{ user.account.parent_account.user.get_full_name }}</span>
                     </div>
-                </div>
-                {% endif %}
-
-                <div class="row mb-7">
-                    <label class="col-lg-4 fw-semibold text-muted">{% trans "Date Joined" %}</label>
-                    <div class="col-lg-8">
-                        <span class="fw-bold fs-6 text-gray-900">
-                            {{ user.date_joined|date:"F d, Y" }}
-                        </span>
+                    {% endif %}
+                    <div class="flex justify-between items-center">
+                        <span class="opacity-60 text-sm">{% trans "Date Joined" %}</span>
+                        <span class="font-semibold">{{ user.date_joined|date:"F d, Y" }}</span>
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        <!-- User Permissions Card -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <h3 class="fw-bold m-0">{% trans "Permissions" %}</h3>
-                </div>
-            </div>
-            <div class="card-body p-9">
-                <div class="table-responsive">
-                    <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+        <!-- Permissions -->
+        <div class="card bg-base-100 shadow-xl border border-base-200">
+            <div class="card-body">
+                <h3 class="card-title border-b border-base-200 pb-2 mb-4 text-lg">{% trans "Permissions" %}</h3>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm w-full">
                         <thead>
-                            <tr class="fw-bold text-muted">
-                                <th class="min-w-150px">{% trans "Module" %}</th>
-                                <th class="min-w-100px text-center">{% trans "View" %}</th>
-                                <th class="min-w-100px text-center">{% trans "Create" %}</th>
-                                <th class="min-w-100px text-center">{% trans "Update" %}</th>
-                                <th class="min-w-100px text-center">{% trans "Delete" %}</th>
+                            <tr class="text-xs uppercase opacity-50">
+                                <th>{% trans "Module" %}</th>
+                                <th class="text-center">V</th>
+                                <th class="text-center">C</th>
+                                <th class="text-center">U</th>
+                                <th class="text-center">D</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% if user.is_account and user.account %}
-                                <!-- Accounts -->
                                 {% if user.is_superuser or user.is_staff %}
                                 <tr>
-                                    <td class="fw-bold">{% trans "Accounts" %}</td>
-                                    <td class="text-center">
-                                        {% if user.account.can_view_account %}
-                                            <i class="ki-duotone ki-check-circle fs-2 text-success"></i>
-                                        {% else %}
-                                            <i class="ki-duotone ki-cross-circle fs-2 text-danger"></i>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        {% if user.account.can_add_account %}
-                                            <i class="ki-duotone ki-check-circle fs-2 text-success"></i>
-                                        {% else %}
-                                            <i class="ki-duotone ki-cross-circle fs-2 text-danger"></i>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        {% if user.account.can_change_account %}
-                                            <i class="ki-duotone ki-check-circle fs-2 text-success"></i>
-                                        {% else %}
-                                            <i class="ki-duotone ki-cross-circle fs-2 text-danger"></i>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        {% if user.account.can_delete_account %}
-                                            <i class="ki-duotone ki-check-circle fs-2 text-success"></i>
-                                        {% else %}
-                                            <i class="ki-duotone ki-cross-circle fs-2 text-danger"></i>
-                                        {% endif %}
-                                    </td>
+                                    <td class="font-bold">{% trans "Accounts" %}</td>
+                                    <td class="text-center">{% if user.account.can_view_account %}✅{% else %}❌{% endif %}</td>
+                                    <td class="text-center">{% if user.account.can_add_account %}✅{% else %}❌{% endif %}</td>
+                                    <td class="text-center">{% if user.account.can_change_account %}✅{% else %}❌{% endif %}</td>
+                                    <td class="text-center">{% if user.account.can_delete_account %}✅{% else %}❌{% endif %}</td>
                                 </tr>
                                 {% endif %}
                             {% else %}
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">
-                                        {% trans "No permissions assigned" %}
-                                    </td>
+                                    <td colspan="5" class="text-center opacity-50 italic">{% trans "No permissions assigned" %}</td>
                                 </tr>
                             {% endif %}
                         </tbody>
@@ -199,5 +129,5 @@
             </div>
         </div>
     </div>
-</main>
+</div>
 {% endblock content %}

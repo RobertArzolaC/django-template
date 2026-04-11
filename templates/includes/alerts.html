@@ -1,108 +1,74 @@
-<script>
+<div id="toast-container" class="toast toast-top toast-end z-[999]">
     {% if messages %}
         {% for message in messages %}
-            Swal.fire({
-                icon: '{{ message.tags }}',
-                title: '{{ message.tags|capfirst }}',
-                text: '{{ message }}',
-                timer: 3500,
-                showConfirmButton: false,
-                position: 'top-end',
-                toast: true,
-                timerProgressBar: true,
-                customClass: {
-                    popup: 'colored-toast',
-                    title: 'swal2-title-custom',
-                    content: 'swal2-content-custom'
-                },
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
+            <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %} shadow-lg transition-all duration-300 transform translate-x-full opacity-0" data-alert>
+                <span>{{ message }}</span>
+                <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+            </div>
         {% endfor %}
     {% endif %}
 
     {% if errors %}
-        let modals = [];
         {% for form_name, form_errors in errors.items %}
             {% for field, error_list in form_errors.items %}
                 {% for error in error_list %}
-                    modals.push({
-                        icon: 'error',
-                        title: '{{ field }}',
-                        text: '{{ error }}',
-                        timer: 3500,
-                        showConfirmButton: false,
-                        position: 'top-end',
-                        toast: true,
-                        timerProgressBar: true,
-                        customClass: {
-                            popup: 'colored-toast',
-                            title: 'swal2-title-custom',
-                            content: 'swal2-content-custom'
-                        },
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+                    <div class="alert alert-error shadow-lg transition-all duration-300 transform translate-x-full opacity-0" data-alert>
+                        <span><strong>{{ field }}:</strong> {{ error }}</span>
+                        <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+                    </div>
                 {% endfor %}
             {% endfor %}
         {% endfor %}
-        if(modals.length > 0){
-            modals.forEach(function(element){
-                Swal.fire(element)
-            })
-        }
     {% endif %}
 
     {% if form.errors %}
         {% for error_list in form.errors.values %}
             {% for error in error_list %}
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: '{{ error }}',
-                    timer: 3500,
-                    showConfirmButton: false,
-                    position: 'top-end',
-                    toast: true,
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: 'colored-toast',
-                        title: 'swal2-title-custom',
-                        content: 'swal2-content-custom'
-                    },
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                });
+                <div class="alert alert-error shadow-lg transition-all duration-300 transform translate-x-full opacity-0" data-alert>
+                    <span>{{ error }}</span>
+                    <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+                </div>
             {% endfor %}
         {% endfor %}
     {% endif %}
+</div>
 
-    function showAlert(title, message, icon='info'){
-        Swal.fire({
-            icon: icon,
-            title: title,
-            text: message,
-            timer: 3500,
-            showConfirmButton: false,
-            position: 'top-end',
-            toast: true,
-            timerProgressBar: true,
-            customClass: {
-                popup: 'colored-toast',
-                title: 'swal2-title-custom',
-                content: 'swal2-content-custom'
-            },
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const alerts = document.querySelectorAll('[data-alert]');
+        alerts.forEach((alert, index) => {
+            // Animate in
+            setTimeout(() => {
+                alert.classList.remove('translate-x-full', 'opacity-0');
+            }, 100 * index);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                alert.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => alert.remove(), 300);
+            }, 5000 + (100 * index));
         });
-    }
+    });
 
+    function showAlert(title, message, type='info'){
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+        
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} shadow-lg transition-all duration-300 transform translate-x-full opacity-0`;
+        alert.innerHTML = `
+            <span>${title ? `<strong>${title}:</strong> ` : ''}${message}</span>
+            <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+        `;
+        container.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.classList.remove('translate-x-full', 'opacity-0');
+        }, 10);
+
+        setTimeout(() => {
+            alert.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => alert.remove(), 300);
+        }, 5000);
+    }
 </script>

@@ -47,12 +47,20 @@ THIRD_PARTY_APPS = [
     "dal",
     "dal_select2",
     "cities_light",
+    "tailwind",
 ]
 
 LOCAL_APPS = [
     "apps.core.apps.CoreConfig",
     "apps.authentication.apps.AuthenticationConfig",
     "apps.users.apps.UsersConfig",
+    "apps.theme.apps.ThemeConfig",
+]
+
+TAILWIND_APP_NAME = "apps.theme"
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

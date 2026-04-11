@@ -2,222 +2,160 @@
 {% load static %}
 {% load i18n %}
 
-{% block title_page %}{{ entity }}{% endblock title_page %}
-{% block toolbar_title %}{{ entity }}{% endblock %}
+{% block title_page %}{% trans "Settings" %}{% endblock title_page %}
+{% block toolbar_title %}{% trans "Account Settings" %}{% endblock %}
 
 {% block content %}
-<main class="container-xxl">
-    <div class="d-flex flex-column gap-7 gap-lg-10">
-        <!-- Settings Form Card -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <h3 class="fw-bold m-0">{% trans "Personal Information" %}</h3>
-                </div>
-            </div>
-            <div class="card-body p-9">
-                <form method="post" enctype="multipart/form-data" id="settings-form">
-                    {% csrf_token %}
+<div class="flex flex-col gap-8">
+    <!-- Personal Information Card -->
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body">
+            <h3 class="card-title border-b border-base-200 pb-2 mb-6">{% trans "Personal Information" %}</h3>
+            
+            <form method="post" enctype="multipart/form-data" id="settings-form" class="flex flex-col gap-6">
+                {% csrf_token %}
 
-                    <!-- Avatar Section -->
-                    <div class="row mb-7">
-                        <label class="col-lg-4 fw-semibold text-muted">{% trans "Avatar" %}</label>
-                        <div class="col-lg-8">
-                            <div class="image-input image-input-outline" data-kt-image-input="true">
-                                <div class="image-input-wrapper w-125px h-125px" style="background-image: url({% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'assets/media/avatars/blank.png' %}{% endif %})"></div>
-
-                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="{% trans 'Change avatar' %}">
-                                    <i class="ki-duotone ki-pencil fs-7">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                    <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
-                                    <input type="hidden" name="avatar_remove" />
+                <!-- Avatar Section -->
+                <div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                    <div class="flex flex-col items-center gap-4">
+                        <label class="font-semibold opacity-70 text-sm self-start md:self-center">{% trans "Avatar" %}</label>
+                        <div class="relative group">
+                            <div class="avatar">
+                                <div class="w-32 h-32 rounded-xl ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden bg-base-200 shadow-md">
+                                    <img id="avatar-preview" src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'assets/media/avatars/blank.png' %}{% endif %}" alt="Avatar" />
+                                </div>
+                            </div>
+                            <div class="absolute -bottom-2 -right-2 flex gap-1">
+                                <label class="btn btn-circle btn-primary btn-sm shadow-lg cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                    </svg>
+                                    <input type="file" name="avatar" id="avatar-input" class="hidden" accept=".png, .jpg, .jpeg" />
                                 </label>
-
-                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="{% trans 'Cancel avatar' %}">
-                                    <i class="ki-duotone ki-cross fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </span>
-
-                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="{% trans 'Remove avatar' %}">
-                                    <i class="ki-duotone ki-cross fs-2">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </span>
+                                <button type="button" id="remove-avatar" class="btn btn-circle btn-error btn-sm shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-white">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.11 0 0 0-7.5 0" />
+                                    </svg>
+                                </button>
+                                <input type="hidden" name="avatar_remove" id="avatar-remove-input" value="" />
                             </div>
-                            <div class="form-text">{% trans "Allowed file types: png, jpg, jpeg." %}</div>
                         </div>
+                        <span class="text-xs opacity-50 mt-2">{% trans "Allowed: png, jpg, jpeg." %}</span>
                     </div>
 
-                    <!-- First Name -->
-                    <div class="row mb-7">
-                        <label class="col-lg-4 col-form-label required fw-semibold fs-6">{% trans "First Name" %}</label>
-                        <div class="col-lg-8 fv-row">
-                            <input type="text" name="first_name" class="form-control form-control-lg form-control-solid" placeholder="{% trans 'First name' %}" value="{{ user.first_name }}" required />
+                    <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                        <div class="form-control w-full">
+                            <label class="label font-semibold opacity-70">{% trans "First Name" %}</label>
+                            <input type="text" name="first_name" class="input input-bordered w-full focus:input-primary" value="{{ user.first_name }}" required />
+                        </div>
+                        <div class="form-control w-full">
+                            <label class="label font-semibold opacity-70">{% trans "Last Name" %}</label>
+                            <input type="text" name="last_name" class="input input-bordered w-full focus:input-primary" value="{{ user.last_name }}" />
+                        </div>
+                        <div class="form-control w-full">
+                            <label class="label font-semibold opacity-70">{% trans "Email" %}</label>
+                            <input type="email" class="input input-bordered w-full bg-base-200 cursor-not-allowed" value="{{ user.email }}" disabled />
+                            <span class="text-xs opacity-50 px-1 mt-1 italic">{% trans "Email cannot be changed" %}</span>
+                        </div>
+                        <div class="form-control w-full">
+                            <label class="label font-semibold opacity-70">{% trans "User Type" %}</label>
+                            <input type="text" class="input input-bordered w-full bg-base-200 cursor-not-allowed" value="{{ user.get_user_type_display }}" disabled />
                         </div>
                     </div>
+                </div>
 
-                    <!-- Last Name -->
-                    <div class="row mb-7">
-                        <label class="col-lg-4 col-form-label fw-semibold fs-6">{% trans "Last Name" %}</label>
-                        <div class="col-lg-8 fv-row">
-                            <input type="text" name="last_name" class="form-control form-control-lg form-control-solid" placeholder="{% trans 'Last name' %}" value="{{ user.last_name }}" />
+                {% if user.is_account and account_form %}
+                <div class="divider text-xs uppercase opacity-40 font-bold">{% trans "Account Settings" %}</div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-control w-full">
+                        <label class="label font-semibold opacity-70">{% trans "Account Type" %}</label>
+                        <div class="pt-2">
+                            {% if user.account.is_organization %}
+                                <div class="badge badge-primary badge-outline lg:badge-lg">{% trans "Organization" %}</div>
+                            {% else %}
+                                <div class="badge badge-info badge-outline lg:badge-lg">{% trans "Individual" %}</div>
+                            {% endif %}
                         </div>
                     </div>
-
-                    <!-- Email (Read-only) -->
-                    <div class="row mb-7">
-                        <label class="col-lg-4 col-form-label fw-semibold fs-6">{% trans "Email" %}</label>
-                        <div class="col-lg-8 fv-row">
-                            <input type="email" class="form-control form-control-lg form-control-solid" value="{{ user.email }}" disabled />
-                            <div class="form-text">{% trans "Email cannot be changed" %}</div>
-                        </div>
-                    </div>
-
-                    <!-- User Type (Read-only) -->
-                    <div class="row mb-7">
-                        <label class="col-lg-4 col-form-label fw-semibold fs-6">{% trans "User Type" %}</label>
-                        <div class="col-lg-8 fv-row">
-                            <input type="text" class="form-control form-control-lg form-control-solid" value="{{ user.get_user_type_display }}" disabled />
-                        </div>
-                    </div>
-
-                    <!-- Account Settings (if user has account) -->
-                    {% if user.is_account and account_form %}
-                    <div class="separator separator-dashed my-10"></div>
-
-                    <div class="row mb-7">
-                        <div class="col-lg-12">
-                            <h4 class="fw-bold text-gray-900 mb-5">{% trans "Account Settings" %}</h4>
-                        </div>
-                    </div>
-
-                    {% if user.account.is_organization %}
-                    <div class="row mb-7">
-                        <label class="col-lg-4 col-form-label fw-semibold fs-6">{% trans "Account Type" %}</label>
-                        <div class="col-lg-8 fv-row">
-                            <span class="badge badge-light-primary fs-6">{% trans "Organization" %}</span>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="row mb-7">
-                        <label class="col-lg-4 col-form-label fw-semibold fs-6">{% trans "Account Type" %}</label>
-                        <div class="col-lg-8 fv-row">
-                            <span class="badge badge-light-info fs-6">{% trans "Individual" %}</span>
-                        </div>
-                    </div>
-                    {% endif %}
-
                     {% if user.account.parent_account %}
-                    <div class="row mb-7">
-                        <label class="col-lg-4 col-form-label fw-semibold fs-6">{% trans "Parent Account" %}</label>
-                        <div class="col-lg-8 fv-row">
-                            <input type="text" class="form-control form-control-lg form-control-solid" value="{{ user.account.parent_account.user.get_full_name }}" disabled />
-                        </div>
+                    <div class="form-control w-full">
+                        <label class="label font-semibold opacity-70">{% trans "Parent Account" %}</label>
+                        <input type="text" class="input input-bordered w-full bg-base-200 cursor-not-allowed" value="{{ user.account.parent_account.user.get_full_name }}" disabled />
                     </div>
                     {% endif %}
-                    {% endif %}
+                </div>
+                {% endif %}
 
-                    <!-- Action Buttons -->
-                    <div class="card-footer d-flex justify-content-end py-6 px-9">
-                        <a href="{{ back_url }}" class="btn btn-light btn-active-light-primary me-2">
-                            {% trans "Cancel" %}
-                        </a>
-                        <button type="submit" class="btn btn-primary" id="kt_settings_submit">
-                            <span class="indicator-label">{% trans "Save Changes" %}</span>
-                            <span class="indicator-progress">
-                                {% trans "Please wait..." %}
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                            </span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="flex justify-end gap-3 mt-6 border-t border-base-200 pt-6">
+                    <a href="{{ back_url }}" class="btn btn-ghost">{% trans "Cancel" %}</a>
+                    <button type="submit" class="btn btn-primary px-8" id="save-button">
+                        <span id="save-text">{% trans "Save Changes" %}</span>
+                        <span id="save-loading" class="loading loading-spinner hidden"></span>
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <!-- Password Change Card -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">
-                    <h3 class="fw-bold m-0">{% trans "Security" %}</h3>
+    <!-- Security Section -->
+    <div class="card bg-base-100 shadow-xl border border-base-200 overflow-hidden">
+        <div class="card-body bg-primary/5">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="bg-primary text-primary-content p-4 rounded-2xl shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                    </svg>
                 </div>
-            </div>
-            <div class="card-body p-9">
-                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
-                    <i class="ki-duotone ki-shield-tick fs-2tx text-primary me-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    <div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
-                        <div class="mb-3 mb-md-0 fw-semibold">
-                            <h4 class="text-gray-900 fw-bold">{% trans "Change Password" %}</h4>
-                            <div class="fs-6 text-gray-700 pe-7">
-                                {% trans "To change your password, please contact your administrator or use the password reset option." %}
-                            </div>
-                        </div>
-                        <a href="{% url 'account_change_password' %}" class="btn btn-primary px-6 align-self-center text-nowrap">
-                            {% trans "Change Password" %}
-                        </a>
-                    </div>
+                <div class="flex-grow text-center md:text-left">
+                    <h4 class="text-xl font-bold">{% trans "Security & Password" %}</h4>
+                    <p class="opacity-70 mt-1 max-w-lg">
+                        {% trans "To change your password, please contact your administrator or use the password change option below." %}
+                    </p>
                 </div>
+                <a href="{% url 'account_change_password' %}" class="btn btn-primary px-8">
+                    {% trans "Change Password" %}
+                </a>
             </div>
         </div>
     </div>
-</main>
+</div>
 {% endblock content %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Image input functionality
-        const imageInputs = document.querySelectorAll('[data-kt-image-input="true"]');
-        imageInputs.forEach(function(imageInput) {
-            const imageInputWrapper = imageInput.querySelector('.image-input-wrapper');
-            const imageInputChange = imageInput.querySelector('[data-kt-image-input-action="change"]');
-            const imageInputCancel = imageInput.querySelector('[data-kt-image-input-action="cancel"]');
-            const imageInputRemove = imageInput.querySelector('[data-kt-image-input-action="remove"]');
-            const imageInputFileInput = imageInput.querySelector('input[type="file"]');
-            const imageInputHiddenInput = imageInput.querySelector('input[type="hidden"]');
+    document.addEventListener('DOMContentLoaded', () => {
+        const avatarInput = document.getElementById('avatar-input');
+        const avatarPreview = document.getElementById('avatar-preview');
+        const removeAvatarBtn = document.getElementById('remove-avatar');
+        const avatarRemoveInput = document.getElementById('avatar-remove-input');
+        const settingsForm = document.getElementById('settings-form');
+        const saveButton = document.getElementById('save-button');
+        const saveText = document.getElementById('save-text');
+        const saveLoading = document.getElementById('save-loading');
 
-            let originalImage = imageInputWrapper.style.backgroundImage;
-
-            imageInputChange.addEventListener('click', function() {
-                imageInputFileInput.click();
-            });
-
-            imageInputFileInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imageInputWrapper.style.backgroundImage = 'url(' + e.target.result + ')';
-                    }
-                    reader.readAsDataURL(this.files[0]);
-                }
-            });
-
-            imageInputCancel.addEventListener('click', function() {
-                imageInputWrapper.style.backgroundImage = originalImage;
-                imageInputFileInput.value = '';
-            });
-
-            imageInputRemove.addEventListener('click', function() {
-                imageInputWrapper.style.backgroundImage = 'url({% static "assets/media/avatars/blank.png" %})';
-                imageInputFileInput.value = '';
-                imageInputHiddenInput.value = '1';
-            });
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    avatarPreview.src = event.target.result;
+                    avatarRemoveInput.value = '';
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
-        // Form submission handling
-        const form = document.getElementById('settings-form');
-        const submitButton = document.getElementById('kt_settings_submit');
+        removeAvatarBtn.addEventListener('click', () => {
+            avatarPreview.src = "{% static 'assets/media/avatars/blank.png' %}";
+            avatarInput.value = '';
+            avatarRemoveInput.value = '1';
+        });
 
-        form.addEventListener('submit', function() {
-            submitButton.setAttribute('data-kt-indicator', 'on');
-            submitButton.disabled = true;
+        settingsForm.addEventListener('submit', () => {
+            saveButton.disabled = true;
+            saveText.classList.add('hidden');
+            saveLoading.classList.remove('hidden');
         });
     });
 </script>

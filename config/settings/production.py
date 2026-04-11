@@ -147,3 +147,5 @@ CONSTANCE_BACKEND = "constance.backends.redisd.RedisBackend"
 CONSTANCE_REDIS_CONNECTION = config(  # noqa
     "REDIS_URL", default="redis://127.0.0.1:6379/"
 )
+
+TAILWIND_DEV_MODE = False

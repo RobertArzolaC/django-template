@@ -1,10 +1,10 @@
 from allauth.account.forms import SignupForm
 from allauth.account.models import EmailAddress
+from constance import config
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
-from django_constance import config
 
 from apps.users import mixins, models
 
