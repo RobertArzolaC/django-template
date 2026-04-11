@@ -13,9 +13,7 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 }
 
 CONSTANCE_CONFIG = {
-    "PROJECT_NAME": ("Project Name", _("Project name.")),
     "COMPANY_LOGO": ("default.png", _("Company logo"), "image_field"),
-    "COMPANY_DOMAIN": ("https://company.com/", _("Website domain.")),
     "JSON_FIELD_EXAMPLE": ({"name": "test"}, _("Test json field"), "json_field"),
     "ENABLE_SEND_EMAIL": (True, _("Enable sending emails.")),
     "ENABLE_VERIFICATION_EMAIL": (True, _("Enable email verification.")),
@@ -24,10 +22,8 @@ CONSTANCE_CONFIG = {
 CONSTANCE_CONFIG_FIELDSETS = {
     "1. General Options": {
         "fields": (
-            "PROJECT_NAME",
             "COMPANY_LOGO",
             "JSON_FIELD_EXAMPLE",
-            "COMPANY_DOMAIN",
             "ENABLE_SEND_EMAIL",
             "ENABLE_VERIFICATION_EMAIL",
         ),
