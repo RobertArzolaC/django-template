@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 class PermissionFormMixin:
     PERMISSION_MAPPING = {
-        "account": {"app": "customers", "model": "account"},
+        "account": {"app": "users", "model": "account"},
     }
 
     def __init__(self, *args, **kwargs):

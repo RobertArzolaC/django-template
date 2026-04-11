@@ -5,7 +5,7 @@ import factory
 from django.utils import timezone
 
 from apps.core import choices
-from apps.customers import models
+from apps.users import models
 from apps.laboratory import choices as laboratory_choices
 from apps.laboratory import models as laboratory_models
 from apps.users.models import User

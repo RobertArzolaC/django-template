@@ -6,6 +6,13 @@ from apps.users.forms import CustomUserChangeForm, CustomUserCreationForm
 from apps.users.models import User
 
 
+########################################
+# Migrated from customers app
+########################################
+
+from django.utils.translation import gettext_lazy as _
+
+@admin.register(User)
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
@@ -74,4 +81,11 @@ class CustomUserAdmin(UserAdmin):
         return super().get_queryset(request)
 
 
-admin.site.register(User, CustomUserAdmin)
+from apps.users.models import Account
+
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    list_display = ("user", "full_name",)
+    search_fields = ("user__first_name", "user__last_name",)
+    autocomplete_fields = ["user"]
+    exclude = ("is_removed",)

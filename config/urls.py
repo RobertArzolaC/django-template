@@ -20,7 +20,6 @@ urlpatterns += [
     path("core/", include("apps.core.urls")),
     path("users/", include("apps.users.urls")),
     path("dashboard/", include("apps.dashboard.urls")),
-    path("customers/", include("apps.customers.urls")),
     path("authentication/", include("apps.authentication.urls")),
 ]
 

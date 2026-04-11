@@ -82,15 +82,6 @@ class Person(BaseAddress, BaseContact):
         default=choices.Gender.MALE,
     )
     birth_date = models.DateField(_("Birth date"), null=True, blank=True)
-    agency = models.ForeignKey(
-        "customers.Agency",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="%(class)s_set",
-        verbose_name=_("Agency"),
-        help_text=_("Agency associated with this person"),
-    )
     user = models.OneToOneField(
         "users.User",
         on_delete=models.SET_NULL,

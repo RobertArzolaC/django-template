@@ -2,7 +2,7 @@ import django_filters
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from apps.customers import models
+from apps.users import models
 
 
 class AccountFilter(django_filters.FilterSet):
