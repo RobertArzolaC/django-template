@@ -2,21 +2,15 @@ from allauth.account.models import EmailAddress
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
+from apps.users import models
 from apps.users.forms import CustomUserChangeForm, CustomUserCreationForm
-from apps.users.models import User
 
 
-########################################
-# Migrated from customers app
-########################################
-
-from django.utils.translation import gettext_lazy as _
-
-@admin.register(User)
+@admin.register(models.User)
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
-    model = User
+    model = models.User
     list_display = (
         "email",
         "first_name",
@@ -81,11 +75,15 @@ class CustomUserAdmin(UserAdmin):
         return super().get_queryset(request)
 
 
-from apps.users.models import Account
-
-@admin.register(Account)
+@admin.register(models.Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ("user", "full_name",)
-    search_fields = ("user__first_name", "user__last_name",)
+    list_display = (
+        "user",
+        "full_name",
+    )
+    search_fields = (
+        "user__first_name",
+        "user__last_name",
+    )
     autocomplete_fields = ["user"]
     exclude = ("is_removed",)

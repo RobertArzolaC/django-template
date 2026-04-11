@@ -1,12 +1,17 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import TemplateView, View
+from django.views.generic import FormView, TemplateView, UpdateView, View
+from django_filters.views import FilterView
 
-from apps.users import forms
+from apps.core import mixins as core_mixins
+from apps.users import filtersets, forms, models
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -72,25 +77,6 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
         return render(request, self.template_name, self.get_context_data())
 
 
-########################################
-# Migrated from customers app
-########################################
-
-from constance import config
-from django.contrib.auth.mixins import (
-    LoginRequiredMixin,
-    PermissionRequiredMixin,
-)
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, UpdateView
-from django_filters.views import FilterView
-
-from apps.core import mixins as core_mixins
-from apps.users import filtersets, forms, models
-
-
 class AccountListView(
     PermissionRequiredMixin, FilterView, LoginRequiredMixin, SuccessMessageMixin
 ):
@@ -103,13 +89,10 @@ class AccountListView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["config"] = config
         context["entity"] = _("Account")
         context["entity_plural"] = _("Accounts")
         context["back_url"] = reverse_lazy("apps.dashboard:index")
-        context["add_entity_url"] = reverse_lazy(
-            "apps.users:account_create"
-        )
+        context["add_entity_url"] = reverse_lazy("apps.users:account_create")
 
         return context
 

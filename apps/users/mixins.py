@@ -33,7 +33,11 @@ class PermissionFormMixin:
         return permission_fields
 
     def _get_initial_permission(self, app_label, model_name, codename):
-        if hasattr(self, "instance") and self.instance and hasattr(self.instance, "user"):
+        if (
+            hasattr(self, "instance")
+            and self.instance
+            and hasattr(self.instance, "user")
+        ):
             return self.instance.user.has_perm(f"{app_label}.{codename}")
         return False
 

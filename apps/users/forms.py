@@ -1,34 +1,34 @@
 from allauth.account.forms import SignupForm
 from allauth.account.models import EmailAddress
-from constance import config
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
+from django_constance import config
 
-from apps.users import mixins, models as user_models
-from apps.users.models import User, Account
+from apps.users import mixins, models
+
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta:
-        model = User
+        model = models.User
         fields = ("email",)
 
 
 class CustomUserChangeForm(UserChangeForm):
-
     class Meta:
-        model = User
+        model = models.User
         fields = ("email",)
 
 
 class UserSettingsForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, label=_("First name"))
-    last_name = forms.CharField(max_length=30, label=_("Last name"), required=False)
+    last_name = forms.CharField(
+        max_length=30, label=_("Last name"), required=False
+    )
 
     class Meta:
-        model = user_models.User
+        model = models.User
         fields = ["first_name", "last_name"]
 
 
@@ -46,8 +46,10 @@ class AccountCreationForm(mixins.PermissionFormMixin, SignupForm):
         cleaned_data = super().clean()
         email = cleaned_data.get("email")
 
-        if user_models.User.objects.filter(email=email).exists():
-            raise forms.ValidationError(_("An account with this email already exists"))
+        if models.User.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                _("An account with this email already exists")
+            )
 
         return cleaned_data
 
@@ -61,7 +63,7 @@ class AccountCreationForm(mixins.PermissionFormMixin, SignupForm):
             user.avatar = self.cleaned_data["avatar"]
             user.must_change_password = True
 
-            temp_password = user_models.User.objects.make_random_password()
+            temp_password = models.User.objects.make_random_password()
             user.set_password(temp_password)
             user.save()
             self.save_permissions(user)
@@ -83,7 +85,7 @@ class AccountUpdateForm(mixins.PermissionFormMixin, forms.ModelForm):
     avatar = forms.ImageField(required=False)
 
     class Meta:
-        model = user_models.Account
+        model = models.Account
         fields = ["avatar"]
 
     def __init__(self, *args, user=None, **kwargs):
@@ -112,5 +114,5 @@ class AccountUpdateForm(mixins.PermissionFormMixin, forms.ModelForm):
 
 class AccountSettingsForm(forms.ModelForm):
     class Meta:
-        model = user_models.Account
+        model = models.Account
         fields = "__all__"
