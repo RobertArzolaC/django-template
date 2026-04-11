@@ -1,6 +1,5 @@
 from allauth.account.forms import SignupForm
 from allauth.account.models import EmailAddress
-from allauth.account.utils import send_email_confirmation
 from constance import config
 from django import forms
 from django.db import transaction
@@ -44,12 +43,12 @@ class AccountCreationForm(mixins.PermissionFormMixin, SignupForm):
             user.save()
             self.save_permissions(user)
 
-            EmailAddress.objects.get_or_create(
+            email_address, _ = EmailAddress.objects.get_or_create(
                 user=user, email=user.email, primary=True, verified=False
             )
 
             if config.ENABLE_SEND_EMAIL:
-                send_email_confirmation(request, user, signup=True)
+                email_address.send_confirmation(request, signup=True)
 
             return user
 

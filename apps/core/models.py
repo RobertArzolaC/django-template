@@ -2,8 +2,6 @@ from datetime import date
 
 from cities_light.models import City, Country, Region, SubRegion
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -167,17 +165,7 @@ class IsActive(models.Model):
 
 
 class StatusHistory(BaseUserTracked, TimeStampedModel):
-    """Generic model to track status changes for any model."""
-
-    content_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE,
-        help_text=_("Content type of the related object."),
-    )
-    object_id = models.PositiveIntegerField(
-        help_text=_("Primary key of the related object.")
-    )
-    related_object = GenericForeignKey("content_type", "object_id")
+    """Generic abstract model to track status changes for any model."""
 
     status = models.CharField(
         _("Status"),
@@ -197,16 +185,16 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
     )
 
     class Meta:
+        abstract = True
         verbose_name = _("Status History")
         verbose_name_plural = _("Status Histories")
         ordering = ["-created"]
         indexes = [
-            models.Index(fields=["content_type", "object_id"]),
             models.Index(fields=["created"]),
         ]
 
     def __str__(self) -> str:
-        return f"{self.content_type.model} {self.object_id}: {self.previous_status} → {self.status}"
+        return f"{self.previous_status} → {self.status}"
 
     @property
     def changed_by(self):
@@ -218,12 +206,30 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
         """Alias for created to maintain API compatibility."""
         return self.created
 
+    def get_parent_filters(self) -> dict:
+        """
+        Return a dictionary with the filters needed to uniquely identify the parent object.
+        Example: return {"order": self.order}
+        """
+        raise NotImplementedError(
+            "Subclasses must implement get_parent_filters()"
+        )
+
+    @classmethod
+    def get_parent_kwargs(cls, instance) -> dict:
+        """
+        Return the kwargs to set the parent ForeignKey on creation.
+        Example: return {"order": instance}
+        """
+        raise NotImplementedError(
+            "Subclasses must implement get_parent_kwargs()"
+        )
+
     @property
     def duration_in_status(self):
         """Calculate duration this status was active."""
-        next_change = StatusHistory.objects.filter(
-            content_type=self.content_type,
-            object_id=self.object_id,
+        next_change = self.__class__.objects.filter(
+            **self.get_parent_filters(),
             created__gt=self.created,
         ).first()
 
@@ -252,11 +258,10 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
             previous_status = getattr(instance, "status", "")
 
         return cls.objects.create(
-            content_type=ContentType.objects.get_for_model(instance),
-            object_id=instance.pk,
             status=new_status,
             previous_status=previous_status,
             note=note,
             created_by=user,
             modified_by=user,
+            **cls.get_parent_kwargs(instance),
         )
