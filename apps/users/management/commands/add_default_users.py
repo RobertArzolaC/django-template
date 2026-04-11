@@ -80,7 +80,8 @@ class Command(BaseCommand):
         )
 
     def create_user(self, user_data, password):
-        email = user_data.get("email")
+        user_data = user_data.copy()
+        email = user_data.pop("email")
         user = User.objects.filter(email=email).first()
         if not user:
             user = User.objects.create_user(
