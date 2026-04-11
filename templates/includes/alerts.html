@@ -1,9 +1,13 @@
-<div id="toast-container" class="toast toast-top toast-end z-[999]">
+<div id="toast-container" class="fixed top-4 right-4 z-9999 flex flex-col gap-4">
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %} shadow-lg transition-all duration-300 transform translate-x-full opacity-0" data-alert>
-                <span>{{ message }}</span>
-                <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+            <div class="flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0 {% if message.tags == 'error' %}border-[#F87171]{% elif message.tags == 'success' %}border-[#34D399]{% elif message.tags == 'warning' %}border-[#FBBF24]{% else %}border-[#3BA2B8]{% endif %}" data-alert>
+                <div class="flex-grow">
+                    <p class="text-base font-medium {% if message.tags == 'error' %}text-[#F87171]{% elif message.tags == 'success' %}text-[#34D399]{% elif message.tags == 'warning' %}text-[#FBBF24]{% else %}text-[#3BA2B8]{% endif %}">
+                        {{ message }}
+                    </p>
+                </div>
+                <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
             </div>
         {% endfor %}
     {% endif %}
@@ -12,9 +16,13 @@
         {% for form_name, form_errors in errors.items %}
             {% for field, error_list in form_errors.items %}
                 {% for error in error_list %}
-                    <div class="alert alert-error shadow-lg transition-all duration-300 transform translate-x-full opacity-0" data-alert>
-                        <span><strong>{{ field }}:</strong> {{ error }}</span>
-                        <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+                    <div class="flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0 border-[#F87171]" data-alert>
+                        <div class="flex-grow">
+                            <p class="text-base font-medium text-[#F87171]">
+                                <strong>{{ field }}:</strong> {{ error }}
+                            </p>
+                        </div>
+                        <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
                     </div>
                 {% endfor %}
             {% endfor %}
@@ -24,9 +32,13 @@
     {% if form.errors %}
         {% for error_list in form.errors.values %}
             {% for error in error_list %}
-                <div class="alert alert-error shadow-lg transition-all duration-300 transform translate-x-full opacity-0" data-alert>
-                    <span>{{ error }}</span>
-                    <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+                <div class="flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0 border-[#F87171]" data-alert>
+                    <div class="flex-grow">
+                        <p class="text-base font-medium text-[#F87171]">
+                            {{ error }}
+                        </p>
+                    </div>
+                    <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
                 </div>
             {% endfor %}
         {% endfor %}
@@ -54,11 +66,23 @@
         const container = document.getElementById('toast-container');
         if (!container) return;
         
+        let borderColor = '#3BA2B8';
+        let textColor = '#3BA2B8';
+        
+        if(type === 'error') { borderColor = '#F87171'; textColor = '#F87171'; }
+        else if(type === 'success') { borderColor = '#34D399'; textColor = '#34D399'; }
+        else if(type === 'warning') { borderColor = '#FBBF24'; textColor = '#FBBF24'; }
+
         const alert = document.createElement('div');
-        alert.className = `alert alert-${type} shadow-lg transition-all duration-300 transform translate-x-full opacity-0`;
+        alert.className = `flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0`;
+        alert.style.borderColor = borderColor;
         alert.innerHTML = `
-            <span>${title ? `<strong>${title}:</strong> ` : ''}${message}</span>
-            <button class="btn btn-ghost btn-xs btn-circle" onclick="this.parentElement.remove()">✕</button>
+            <div class="flex-grow">
+                <p class="text-base font-medium" style="color: ${textColor}">
+                    ${title ? `<strong>${title}:</strong> ` : ''}${message}
+                </p>
+            </div>
+            <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
         `;
         container.appendChild(alert);
         

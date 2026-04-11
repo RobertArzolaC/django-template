@@ -176,7 +176,7 @@ Comprehensive test suite with Factory Boy for test data generation. Coverage rep
 ## Frontend and UI Guidelines
 
 ### Theme and Styling
-- **Theme**: Using Tailwind CSS and DaisyUI in vanilla HTML, CSS, and JavaScript
+- **Theme**: Using TailAdmin with Tailwind CSS in vanilla HTML, CSS, and JavaScript
 - **Templates**: Django templates with Jinja syntax
 - **Icons**: Use Font Awesome for consistent iconography
 - **Form Styling**: Display form fields using Django form variables and apply styles via `add_class` from `widget_tweaks` library

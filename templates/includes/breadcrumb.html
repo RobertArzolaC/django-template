@@ -1,13 +1,18 @@
-<div class="text-sm breadcrumbs opacity-70 mb-2">
-    <ul>
+{% load i18n %}
+
+<nav>
+    <ol class="flex items-center gap-2">
         {% for crumb in breadcrumbs %}
-            <li>
+            <li class="font-medium text-black dark:text-white">
                 {% if not forloop.last %}
-                    <a href="{{ crumb.url }}">{{ crumb.title }}</a>
+                    <a class="flex items-center gap-2 text-primary" href="{{ crumb.url }}">
+                        {{ crumb.title }}
+                        <span> / </span>
+                    </a>
                 {% else %}
                     {{ crumb.title }}
                 {% endif %}
             </li>
         {% endfor %}
-    </ul>
-</div>
+    </ol>
+</nav>
