@@ -1,14 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
-    PermissionRequiredMixin,
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, TemplateView, UpdateView, View
-from django_filters.views import FilterView
+from django.views.generic import TemplateView, View
 
 from apps.core import mixins as core_mixins
 from apps.users import filtersets, forms, models
@@ -77,9 +75,7 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
         return render(request, self.template_name, self.get_context_data())
 
 
-class AccountListView(
-    PermissionRequiredMixin, FilterView, LoginRequiredMixin, SuccessMessageMixin
-):
+class AccountListView(core_mixins.BaseListView):
     model = models.Account
     permission_required = "users.view_account"
     filterset_class = filtersets.AccountFilter
@@ -97,9 +93,7 @@ class AccountListView(
         return context
 
 
-class AccountCreateView(
-    PermissionRequiredMixin, FormView, LoginRequiredMixin, SuccessMessageMixin
-):
+class AccountCreateView(core_mixins.BaseCreateView):
     form_class = forms.AccountCreationForm
     permission_required = "users.add_account"
     template_name = "users/account/form.html"
@@ -117,9 +111,7 @@ class AccountCreateView(
         return context
 
 
-class AccountUpdateView(
-    PermissionRequiredMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView
-):
+class AccountUpdateView(core_mixins.BaseUpdateView):
     model = models.Account
     context_object_name = "account"
     form_class = forms.AccountUpdateForm
@@ -140,5 +132,5 @@ class AccountUpdateView(
         return context
 
 
-class AccountDeleteView(core_mixins.AjaxDeleteViewMixin):
+class AccountDeleteView(core_mixins.BaseDeleteView):
     model = models.Account

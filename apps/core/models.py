@@ -46,7 +46,7 @@ class BaseUserTracked(models.Model):
         null=True,
         blank=True,
     )
-    modified_by = models.ForeignKey(
+    updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         related_name="%(class)s_updated",
@@ -189,8 +189,8 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
 
     @property
     def changed_by(self):
-        """Alias for modified_by to maintain API compatibility."""
-        return self.modified_by
+        """Alias for updated_by to maintain API compatibility."""
+        return self.updated_by
 
     @property
     def changed_at(self):
@@ -253,6 +253,6 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
             previous_status=previous_status,
             note=note,
             created_by=user,
-            modified_by=user,
+            updated_by=user,
             **cls.get_parent_kwargs(instance),
         )

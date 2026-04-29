@@ -5,8 +5,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from model_utils.models import SoftDeletableModel, TimeStampedModel
 
-from model_utils.models import SoftDeletableModel, TimeStampedModel
-
 from apps.users.managers import CustomUserManager
 
 

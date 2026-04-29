@@ -20,15 +20,6 @@ Django Template is a comprehensive template for Django projects with the followi
 - **apps/users/** - User management with custom user model
 - **apps/dashboard/** - Analytics and dashboard views
 
-### Key Architectural Patterns
-
-**Background Processing**: Celery with Redis for async tasks
-
-### Database Architecture
-
-**Core Entity Relationships**:
-- User → Account (organization membership)
-
 ### Settings Configuration
 
 Environment-specific settings in `config/settings/`:
@@ -52,8 +43,6 @@ Basic i18n support configured with locale files in `locale/`.
 
 ### Testing
 Comprehensive test suite with Factory Boy for test data generation. Coverage reports available in `htmlcov/` directory.
-
-## Development Notes
 
 ### Database
 
@@ -140,6 +129,55 @@ Comprehensive test suite with Factory Boy for test data generation. Coverage rep
 - Prefer function-based views (FBVs) for simpler logic
 - Follow the MVT (Model-View-Template) pattern strictly for clear separation of concerns
 - Keep business logic in models and forms; keep views light and focused on request handling
+- **Use custom mixins**: When generating new class-based views, ALWAYS consider and use the reusable mixins defined in `apps/core/mixins/` (e.g., `BaseCreateView`, `BaseUpdateView`, `BaseListView` from `apps/core/mixins/views.py`) to avoid redundant view logic.
+
+#### Service Layer (Business Logic)
+
+- **Encapsulate business logic in service modules**, never in views or models directly
+- Services live in `apps/*/services.py` (or `apps/*/services/` for complex modules)
+- Services are plain Python classes or functions — no Django view/model inheritance
+- Views are responsible only for HTTP handling; they delegate to services
+- Services receive and return Python objects/dataclasses, not HTTP request/response
+
+**Naming convention**:
+- Classes: `{Entity}Service` → `OrderService`, `InvoiceService`
+- Methods: verb + noun → `create_order()`, `calculate_total()`, `send_notification()`
+
+**Structure example**:
+```python
+# apps/orders/services.py
+from apps.users import models as users_models
+from apps.orders import models
+
+class OrderService:
+    """Handles all business logic related to orders."""
+
+    def create_order(self, user: users_models.User, items: list[dict]) -> models.Order:
+        """
+        Creates a new order and calculates totals.
+
+        Args:
+            user: The authenticated user placing the order.
+            items: List of item dicts with 'product_id' and 'quantity'.
+
+        Returns:
+            OrderResult with the created order and computed total.
+        """
+        # business logic here
+        ...
+```
+
+**Integration with views**:
+```python
+# apps/orders/views.py
+from apps.orders import services
+
+class OrderCreateView(LoginRequiredMixin, View):
+    def post(self, request):
+        service = services.OrderService()
+        result = service.create_order(request.user, items=request.POST)
+        ...
+```
 
 #### Database and ORM
 - Leverage Django's ORM for database interactions
@@ -262,13 +300,3 @@ class PermissionTestCase(TestCase):
         response = self.client.get('/nomina/empleados/')
         self.assertEqual(response.status_code, 200)
 ```
-
-## External Context Providers (MCP)
-We use [context7](https://context7.com/) to provide updated Django documentation and official references.
-Claude should query context7 MCP when:
-- Explaining Django features.
-- Providing code examples for Django functionality.
-- Reviewing model definitions, migrations, or ORM usage.
-- Suggesting best practices aligned with Django LTS versions.
-- Offering guidance on Django settings, middleware, or configuration.
-- Providing troubleshooting assistance for common Django issues.
