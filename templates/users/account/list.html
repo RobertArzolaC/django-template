@@ -45,7 +45,8 @@
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M9.16666 3.33332C5.945 3.33332 3.33332 5.945 3.33332 9.16666C3.33332 12.3883 5.945 15 9.16666 15C12.3883 15 15 12.3883 15 9.16666C15 5.945 12.3883 3.33332 9.16666 3.33332ZM1.66666 9.16666C1.66666 5.02452 5.02452 1.66666 9.16666 1.66666C13.3088 1.66666 16.6667 5.02452 16.6667 9.16666C16.6667 13.3088 13.3088 16.6667 9.16666 16.6667C5.02452 16.6667 1.66666 13.3088 1.66666 9.16666Z" />
                 </svg>
             </span>
-            {% render_field filter.form.name_search class="w-full rounded-xl border border-stroke bg-whiten py-3 pl-12 pr-5 text-black focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 focus:outline-none dark:border-strokedark dark:bg-boxdark-2 dark:text-white dark:placeholder-bodydark2 dark:focus:border-primary transition-all duration-300" placeholder="Search by name, email or keyword..." %}
+            {% trans "Search by name, email or keyword..." as search_placeholder %}
+            {% render_field filter.form.name_search class="w-full rounded-xl border border-stroke bg-whiten py-3 pl-12 pr-5 text-black focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 focus:outline-none dark:border-strokedark dark:bg-boxdark-2 dark:text-white dark:placeholder-bodydark2 dark:focus:border-primary transition-all duration-300" placeholder=search_placeholder %}
         </div>
 
         <!-- Filter Toggle -->

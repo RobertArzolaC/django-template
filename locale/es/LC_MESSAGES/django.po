@@ -1332,3 +1332,7 @@ msgstr "Este usuario ya no podrá iniciar sesión. Puede restaurar el acceso en 
 #: templates/users/account/list.html
 msgid "This user will regain access to the platform."
 msgstr "Este usuario recuperará el acceso a la plataforma."
+
+#: templates/users/account/list.html
+msgid "Search by name, email or keyword..."
+msgstr "Buscar por nombre, correo electrónico o palabra clave..."
