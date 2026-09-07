@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-07 14:43-0500\n"
+"POT-Creation-Date: 2026-09-07 16:14-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgid "Last Name"
 msgstr "Apellido"
 
 #: apps/authentication/forms.py:29 apps/core/models.py:35
-#: apps/users/forms.py:84 templates/account/password_reset.html:47
+#: apps/users/forms.py:79 templates/account/password_reset.html:47
 msgid "Email"
 msgstr "Correo electrónico"
 
@@ -157,7 +157,7 @@ msgstr "Código postal"
 msgid "Phone"
 msgstr "Teléfono"
 
-#: apps/core/models.py:62 apps/users/forms.py:25 apps/users/forms.py:82
+#: apps/core/models.py:62 apps/users/forms.py:26 apps/users/forms.py:77
 msgid "First name"
 msgstr "Nombre"
 
@@ -248,27 +248,27 @@ msgstr "Historiales de estado"
 msgid "Dashboard"
 msgstr "Tablero"
 
-#: apps/users/api.py:24
+#: apps/users/api.py:19
+msgid "User not found"
+msgstr "Usuario no encontrado"
+
+#: apps/users/api.py:28
 msgid "Invalid action"
 msgstr "Acción no válida"
 
-#: apps/users/api.py:32
+#: apps/users/api.py:35
 msgid "User status has been successfully updated"
 msgstr "El estado del usuario se ha actualizado con éxito"
 
-#: apps/users/api.py:45
-msgid "No file uploaded"
-msgstr "No se ha subido ningún archivo"
-
-#: apps/users/api.py:54
-msgid "Avatar has been successfully uploaded"
-msgstr "El avatar se ha subido con éxito"
-
-#: apps/users/api.py:66
+#: apps/users/api.py:46
 msgid "User ID is required"
 msgstr "Se requiere ID de usuario"
 
-#: apps/users/api.py:76
+#: apps/users/api.py:52
+msgid "Email address not found"
+msgstr "No se encontró la dirección de correo electrónico"
+
+#: apps/users/api.py:62
 msgid "Verification email has been successfully sent"
 msgstr "El correo electrónico de verificación se ha enviado con éxito"
 
@@ -288,11 +288,11 @@ msgstr "Activo"
 msgid "Inactive"
 msgstr "Inactivo"
 
-#: apps/users/forms.py:27 apps/users/forms.py:83
+#: apps/users/forms.py:27 apps/users/forms.py:78
 msgid "Last name"
 msgstr "Apellido"
 
-#: apps/users/forms.py:51
+#: apps/users/forms.py:49
 msgid "An account with this email already exists"
 msgstr "Ya existe una cuenta con este correo electrónico."
 
@@ -312,12 +312,12 @@ msgstr "El superusuario debe tener is_superuser=True."
 msgid "email address"
 msgstr "dirección de correo electrónico"
 
-#: apps/users/models.py:44 apps/users/views.py:88 apps/users/views.py:109
-#: apps/users/views.py:130 templates/users/profile.html:60
+#: apps/users/models.py:44 apps/users/views.py:92 apps/users/views.py:118
+#: apps/users/views.py:139 templates/users/profile.html:60
 msgid "Account"
 msgstr "Cuenta"
 
-#: apps/users/models.py:45 apps/users/views.py:89
+#: apps/users/models.py:45 apps/users/views.py:93
 #: templates/includes/aside.html:63 templates/includes/aside.html:68
 #: templates/includes/navbar.html:105 templates/users/account/form.html:6
 #: templates/users/account/form.html:142 templates/users/account/list.html:8
@@ -337,21 +337,17 @@ msgstr "Configuración actualizada con éxito"
 msgid "Settings"
 msgstr "Configuración"
 
-#: apps/users/views.py:100
+#: apps/users/views.py:104
 msgid "Account created successfully"
 msgstr "Cuenta creada con éxito"
 
-#: apps/users/views.py:120
+#: apps/users/views.py:129
 msgid "Account updated successfully"
 msgstr "Cuenta actualizada con éxito"
 
 #: config/settings/base.py:161
 msgid "Spanish"
 msgstr "Español"
-
-#: config/settings/base.py:162
-msgid "English"
-msgstr "Inglés"
 
 #: config/settings/tools/django_constance.py:16
 msgid "Company logo"
@@ -438,7 +434,8 @@ msgstr ""
 
 #: templates/account/email_confirm.html:60
 msgid "This email confirmation link expired or is invalid."
-msgstr "Este enlace de confirmación de correo electrónico ha expirado o no es válido."
+msgstr ""
+"Este enlace de confirmación de correo electrónico ha expirado o no es válido."
 
 #: templates/account/email_confirm.html:63
 msgid "Issue a new email confirmation request"
@@ -470,6 +467,56 @@ msgstr "¿No tienes una cuenta?"
 msgid "Sign Up"
 msgstr "Registrarse"
 
+#: templates/account/password_change.html:5
+#: templates/account/password_change.html:6
+#: templates/account/password_change.html:14
+#: templates/account/password_reset_from_key.html:6
+#: templates/account/password_reset_from_key.html:58
+#: templates/account/password_reset_from_key_done.html:6
+#: templates/users/settings.html:162
+msgid "Change Password"
+msgstr "Cambiar Contraseña"
+
+#: templates/account/password_change.html:37
+#: templates/account/password_change.html:58
+#: templates/account/password_change.html:105
+msgid "Toggle password visibility"
+msgstr "Alternar visibilidad de la contraseña"
+
+#: templates/account/password_change.html:119
+#: templates/account/password_reset.html:66 templates/users/settings.html:94
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/account/password_change.html:122
+msgid "Update Password"
+msgstr "Actualizar Contraseña"
+
+#: templates/account/password_change.html:145
+#: templates/account/password_change.html:146
+msgid "Weak"
+msgstr "Débil"
+
+#: templates/account/password_change.html:147
+msgid "Fair"
+msgstr "Regular"
+
+#: templates/account/password_change.html:148
+msgid "Good"
+msgstr "Buena"
+
+#: templates/account/password_change.html:149
+msgid "Strong"
+msgstr "Fuerte"
+
+#: templates/account/password_change.html:200
+msgid "Passwords match"
+msgstr "Las contraseñas coinciden"
+
+#: templates/account/password_change.html:201
+msgid "Passwords do not match"
+msgstr "Las contraseñas no coinciden"
+
 #: templates/account/password_reset.html:6
 #: templates/account/password_reset_done.html:5
 msgid "Password Reset"
@@ -496,18 +543,13 @@ msgstr "Recuperación de Contraseña"
 msgid "Submit"
 msgstr "Enviar"
 
-#: templates/account/password_reset.html:66 templates/users/settings.html:94
-msgid "Cancel"
-msgstr "Cancelar"
-
 #: templates/account/password_reset_done.html:17
 msgid "Check your email"
 msgstr "Revisa tu correo electrónico"
 
 #: templates/account/password_reset_done.html:20
 msgid "We've sent you the instructions to reset your password."
-msgstr ""
-"Te hemos enviado las instrucciones para restablecer tu contraseña."
+msgstr "Te hemos enviado las instrucciones para restablecer tu contraseña."
 
 #: templates/account/password_reset_done.html:33
 msgid "Password Reset Sent"
@@ -524,13 +566,6 @@ msgstr ""
 #: templates/account/password_reset_done.html:42
 msgid "Otherwise contact us if you do not receive it in a few minutes."
 msgstr "De lo contrario, contáctanos si no lo recibes en unos minutos."
-
-#: templates/account/password_reset_from_key.html:6
-#: templates/account/password_reset_from_key.html:58
-#: templates/account/password_reset_from_key_done.html:6
-#: templates/users/settings.html:162
-msgid "Change Password"
-msgstr "Cambiar Contraseña"
 
 #: templates/account/password_reset_from_key.html:18
 msgid "Setup New Password"
@@ -553,7 +588,8 @@ msgstr "Nueva Contraseña"
 
 #: templates/account/password_reset_from_key.html:45
 msgid "Use 8 or more characters with a mix of letters, numbers & symbols."
-msgstr "Usa 8 o más caracteres con una combinación de letras, números y símbolos."
+msgstr ""
+"Usa 8 o más caracteres con una combinación de letras, números y símbolos."
 
 #: templates/account/password_reset_from_key.html:51
 msgid "Confirm Password"
@@ -1074,6 +1110,15 @@ msgstr ""
 "Protege tu cuenta asegurándote de que tu contraseña sea segura y se "
 "actualice regularmente."
 
+#~ msgid "No file uploaded"
+#~ msgstr "No se ha subido ningún archivo"
+
+#~ msgid "Avatar has been successfully uploaded"
+#~ msgstr "El avatar se ha subido con éxito"
+
+#~ msgid "English"
+#~ msgstr "Inglés"
+
 #~ msgid "Agency"
 #~ msgstr "Agencia"
 
@@ -1267,3 +1312,23 @@ msgstr ""
 
 #~ msgid "Reverse Many-to-Many Clear"
 #~ msgstr "Reverso muchos a muchos claro"
+
+#: templates/users/account/list.html
+msgid "Yes, proceed"
+msgstr "Sí, continuar"
+
+#: templates/users/account/list.html
+msgid "Delete Account"
+msgstr "Eliminar cuenta"
+
+#: templates/users/account/list.html
+msgid "This action is permanent and cannot be undone."
+msgstr "Esta acción es permanente y no se puede deshacer."
+
+#: templates/users/account/list.html
+msgid "This user will no longer be able to log in. You can restore access at any time."
+msgstr "Este usuario ya no podrá iniciar sesión. Puede restaurar el acceso en cualquier momento."
+
+#: templates/users/account/list.html
+msgid "This user will regain access to the platform."
+msgstr "Este usuario recuperará el acceso a la plataforma."
