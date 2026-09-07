@@ -1,12 +1,13 @@
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import ValidationError
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from apps.authentication import forms
+from apps.authentication import forms, services
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -44,3 +45,12 @@ class DeactivateAccountView(View):
         return JsonResponse(
             {"status": "success", "message": "Account deactivated successfully."}
         )
+
+
+class ValidatePasswordView(LoginRequiredMixin, View):
+    """Validates a candidate password against the configured validators."""
+
+    def post(self, request, *args, **kwargs):
+        password = request.POST.get("password") or ""
+        checks = services.get_password_checks(password, user=request.user)
+        return JsonResponse({"checks": checks})

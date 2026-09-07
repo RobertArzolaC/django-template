@@ -67,3 +67,47 @@ class DeactivateAccountViewTests(TestCase):
         self.assertEqual(response.json()["status"], "success")
         self.user.refresh_from_db()
         self.assertFalse(self.user.is_active)
+
+
+STRONG_PASSWORD = "9fK2!vX7qL4zM"
+
+
+class ValidatePasswordViewTests(TestCase):
+    """Tests for the live password-validation endpoint."""
+
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.url = reverse("apps.authentication:validate_password_api")
+
+    def test_anonymous_user_redirected(self) -> None:
+        """Anonymous requests are redirected to login."""
+        response = self.client.post(self.url, {"password": STRONG_PASSWORD})
+        self.assertEqual(response.status_code, 302)
+
+    def test_strong_password_returns_all_passed(self) -> None:
+        """A strong password yields checks all marked as passed."""
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, {"password": STRONG_PASSWORD})
+        self.assertEqual(response.status_code, 200)
+        checks = response.json()["checks"]
+        self.assertTrue(checks)
+        for check in checks:
+            self.assertTrue(check["passed"], msg=check["id"])
+
+    def test_weak_password_returns_some_unpassed(self) -> None:
+        """A purely numeric password reports failures."""
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, {"password": "12345678"})
+        self.assertEqual(response.status_code, 200)
+        checks = response.json()["checks"]
+        self.assertTrue(any(not c["passed"] for c in checks))
+
+    def test_empty_password_returns_all_unpassed(self) -> None:
+        """Missing input is reported as not yet valid, not as an error."""
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, {"password": ""})
+        self.assertEqual(response.status_code, 200)
+        checks = response.json()["checks"]
+        self.assertTrue(checks)
+        for check in checks:
+            self.assertFalse(check["passed"])

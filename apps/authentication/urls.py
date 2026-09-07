@@ -15,4 +15,9 @@ urlpatterns = [
         views.DeactivateAccountView.as_view(),
         name="api_deactivate_account",
     ),
+    path(
+        "api/validate-password/",
+        views.ValidatePasswordView.as_view(),
+        name="validate_password_api",
+    ),
 ]
