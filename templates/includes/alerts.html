@@ -1,98 +1,54 @@
-<div id="toast-container" class="fixed top-4 right-4 z-9999 flex flex-col gap-4">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0 {% if message.tags == 'error' %}border-[#F87171]{% elif message.tags == 'success' %}border-[#34D399]{% elif message.tags == 'warning' %}border-[#FBBF24]{% else %}border-[#3BA2B8]{% endif %}" data-alert>
-                <div class="flex-grow">
-                    <p class="text-base font-medium {% if message.tags == 'error' %}text-[#F87171]{% elif message.tags == 'success' %}text-[#34D399]{% elif message.tags == 'warning' %}text-[#FBBF24]{% else %}text-[#3BA2B8]{% endif %}">
-                        {{ message }}
-                    </p>
-                </div>
-                <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
-            </div>
-        {% endfor %}
-    {% endif %}
+{% load static %}
+{% load i18n %}
+<script src="{% static 'js/vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script>
+    function swalIcon(type) {
+        if (type === 'error' || type === 'success' || type === 'warning') {
+            return type;
+        }
+        return 'info';
+    }
 
-    {% if errors %}
-        {% for form_name, form_errors in errors.items %}
-            {% for field, error_list in form_errors.items %}
-                {% for error in error_list %}
-                    <div class="flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0 border-[#F87171]" data-alert>
-                        <div class="flex-grow">
-                            <p class="text-base font-medium text-[#F87171]">
-                                <strong>{{ field }}:</strong> {{ error }}
-                            </p>
-                        </div>
-                        <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
-                    </div>
+    function showAlert(title, message, type = 'info') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            icon: swalIcon(type),
+            title: title || undefined,
+            text: message,
+            timer: 3500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            },
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        {% if messages %}
+            {% for message in messages %}
+                showAlert('', '{{ message|escapejs }}', '{{ message.tags|escapejs }}');
+            {% endfor %}
+        {% endif %}
+
+        {% if errors %}
+            {% for form_name, form_errors in errors.items %}
+                {% for field, error_list in form_errors.items %}
+                    {% for error in error_list %}
+                        showAlert('{{ field|escapejs }}', '{{ error|escapejs }}', 'error');
+                    {% endfor %}
                 {% endfor %}
             {% endfor %}
-        {% endfor %}
-    {% endif %}
+        {% endif %}
 
-    {% if form.errors %}
-        {% for error_list in form.errors.values %}
-            {% for error in error_list %}
-                <div class="flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0 border-[#F87171]" data-alert>
-                    <div class="flex-grow">
-                        <p class="text-base font-medium text-[#F87171]">
-                            {{ error }}
-                        </p>
-                    </div>
-                    <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
-                </div>
+        {% if form.errors %}
+            {% for error_list in form.errors.values %}
+                {% for error in error_list %}
+                    showAlert('{% trans "Error" %}', '{{ error|escapejs }}', 'error');
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-    {% endif %}
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const alerts = document.querySelectorAll('[data-alert]');
-        alerts.forEach((alert, index) => {
-            // Animate in
-            setTimeout(() => {
-                alert.classList.remove('translate-x-full', 'opacity-0');
-            }, 100 * index);
-
-            // Auto-dismiss after 5 seconds
-            setTimeout(() => {
-                alert.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => alert.remove(), 300);
-            }, 5000 + (100 * index));
-        });
+        {% endif %}
     });
-
-    function showAlert(title, message, type='info'){
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-        
-        let borderColor = '#3BA2B8';
-        let textColor = '#3BA2B8';
-        
-        if(type === 'error') { borderColor = '#F87171'; textColor = '#F87171'; }
-        else if(type === 'success') { borderColor = '#34D399'; textColor = '#34D399'; }
-        else if(type === 'warning') { borderColor = '#FBBF24'; textColor = '#FBBF24'; }
-
-        const alert = document.createElement('div');
-        alert.className = `flex w-full border-l-6 rounded-sm bg-white dark:bg-boxdark px-7 py-4 shadow-default transition-all duration-300 transform translate-x-full opacity-0`;
-        alert.style.borderColor = borderColor;
-        alert.innerHTML = `
-            <div class="flex-grow">
-                <p class="text-base font-medium" style="color: ${textColor}">
-                    ${title ? `<strong>${title}:</strong> ` : ''}${message}
-                </p>
-            </div>
-            <button class="ml-4 text-black dark:text-white opacity-50 hover:opacity-100" onclick="this.closest('[data-alert]').remove()">✕</button>
-        `;
-        container.appendChild(alert);
-        
-        setTimeout(() => {
-            alert.classList.remove('translate-x-full', 'opacity-0');
-        }, 10);
-
-        setTimeout(() => {
-            alert.classList.add('translate-x-full', 'opacity-0');
-            setTimeout(() => alert.remove(), 300);
-        }, 5000);
-    }
 </script>
