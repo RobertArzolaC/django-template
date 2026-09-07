@@ -37,6 +37,60 @@ Dependencies are managed with [uv](https://docs.astral.sh/uv/).
    uv run python manage.py tailwind start
    ```
 
+## Docker
+
+The project is containerized with lightweight multi-stage images
+(Python runtime without Node; Tailwind CSS is compiled at build time).
+
+### Development
+
+1. **Create .env file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Start the stack** (postgres, redis, mailpit, django, celery, celerybeat):
+   ```bash
+   docker compose up --build
+   ```
+
+   - App: http://localhost:8000
+   - Mailpit UI: http://localhost:8025
+
+3. **Create Super User**
+   ```bash
+   docker compose exec django python manage.py createsuperuser
+   ```
+
+4. **Get Location Information**
+   ```bash
+   docker compose exec django python manage.py loaddata apps/core/fixtures/ubigeo_data.json
+   ```
+
+### Production
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+The production image excludes the `dev` dependency group (linters, testing,
+debug tools). Mailpit is optional in production and can be disabled with
+`--profile mailpit` (it only runs when explicitly enabled).
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile mailpit up -d
+```
+
+### Convenience commands
+
+```bash
+make dev        # docker compose up --build
+make prod       # production stack (up -d --build)
+make down       # docker compose down
+make logs       # docker compose logs -f
+make ps         # docker compose ps
+```
+
 ## Production
 
 Install base + production group (without dev tools):

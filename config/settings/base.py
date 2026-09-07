@@ -191,7 +191,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "none"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
