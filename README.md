@@ -1,94 +1,94 @@
 ## Configuration Development Environment
 
+Dependencies are managed with [uv](https://docs.astral.sh/uv/).
+
 1. **Create .env file:**
    ```bash
    cp .env.example .env
    ```
 
-2. **Create the virtual environment:**
+2. **Install Dependencies (creates `.venv` and installs base + dev group):**
    ```bash
-   python3 -m venv venv
+   uv sync
    ```
 
 3. **Activate Env**
    ```bash
-   source venv/bin/activate
+   source .venv/bin/activate
    ```
 
-4. **Install Dependencies:**
+4. **Run Migrations**
    ```bash
-   pip install -r requirements/development.txt
+   uv run python manage.py migrate
    ```
 
-5. **Run Migrations**
+5. **Create Super User**
    ```bash
-   python manage.py migrate
+   uv run python manage.py createsuperuser
    ```
 
-6. **Create Super User**
+6. **Run Server**
    ```bash
-   python manage.py createsuperuser
+   uv run python manage.py runserver
    ```
 
-7. **Run Server**
+7. **Start Tailwind (Development)**
    ```bash
-   python manage.py runserver
+   uv run python manage.py tailwind start
    ```
 
-8. **Start Tailwind (Development)**
-   ```bash
-   python manage.py tailwind start
-   ```
+## Production
+
+Install base + production group (without dev tools):
+
+```bash
+uv sync --no-dev --group production
+```
 
 ## Location Information
 
 1. **Get Location Information**
 ```bash
-   python manage.py loaddata apps/core/fixtures/ubigeo_data.json
+   uv run python manage.py loaddata apps/core/fixtures/ubigeo_data.json
 ```
 
 ## Coverage
 
 1. **Run Tests with coverage**
    ```bash
-   coverage run manage.py test --settings=config.settings.testing
+   uv run coverage run manage.py test --settings=config.settings.testing
    ```
 
 2. **Generate report**
    ```bash
-   coverage report --sort=cover
+   uv run coverage report --sort=cover
    ```
 
 3. **Generate HTML report**
    ```bash
-   coverage html
+   uv run coverage html
    ```
 
 ## Linting
 
-1. **Install packages**
+1. **Install pre-commit hooks** (included in the `dev` group)
 ```bash
-   pip install -r requirements/linters.txt
-```
-
-1. **Install pre-commit hooks**
-```bash
-   pre-commit install
+   uv run pre-commit install
 ```
 
 2. **Run pre-commit hooks**
 ```bash
-   pre-commit run --all-files
+   uv run pre-commit run --all-files
 ```
 
 ## Translations
 
 1. **Generate translation files**
 ```bash
-   python manage.py makemessages -l es --ignore "venv/*"
+   uv run python manage.py makemessages -l es --ignore ".venv/*"
 ```
 
 2. **Compile translation files**
 ```bash
-   python manage.py compilemessages -l es --ignore "venv/*"
+   uv run python manage.py compilemessages -l es --ignore ".venv/*"
 ```

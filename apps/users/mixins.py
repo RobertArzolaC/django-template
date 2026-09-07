@@ -42,7 +42,7 @@ class PermissionFormMixin:
         return False
 
     def save_permissions(self, user):
-        for field_name, _ in self.permission_fields.items():
+        for field_name, is_checked in self.permission_fields.items():
             action = field_name.split("_")[1]
             model_key = field_name.split("_")[2]
             model_info = self.PERMISSION_MAPPING[model_key]

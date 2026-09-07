@@ -1,6 +1,0 @@
-# Import all base requirements
--r base.txt
-
-# Django debug toolbar
-django-debug-toolbar==6.3.0
-django-browser-reload==1.21.0
