@@ -47,7 +47,7 @@
             </span>
             {% render_field filter.form.name_search class="w-full rounded-xl border border-stroke bg-whiten py-3 pl-12 pr-5 text-black focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 focus:outline-none dark:border-strokedark dark:bg-boxdark-2 dark:text-white dark:placeholder-bodydark2 dark:focus:border-primary transition-all duration-300" placeholder="Search by name, email or keyword..." %}
         </div>
-        
+
         <!-- Filter Toggle -->
         <div class="relative shrink-0" id="filter-dropdown-wrapper">
             <button type="button" id="filter-dropdown-toggle" class="flex w-full items-center justify-center gap-3 rounded-xl border border-stroke bg-white py-3 px-8 font-semibold text-black hover:text-primary dark:border-strokedark dark:bg-meta-4 dark:text-white transition-all duration-300 shadow-sm hover:shadow-md">
@@ -56,14 +56,14 @@
                 </svg>
                 {% trans "Refine Search" %}
             </button>
-            
+
             <!-- Dropdown Menu -->
             <div id="filter-dropdown-menu" class="absolute right-0 top-full z-40 mt-3 w-full sm:w-85 rounded-2xl border border-stroke bg-white p-6 shadow-theme-xl dark:border-strokedark dark:bg-boxdark hidden animate-fade-in origin-top-right">
                 <div class="flex items-center justify-between mb-6">
                     <h4 class="text-lg font-bold text-black dark:text-white">{% trans "Filters" %}</h4>
                     <button type="reset" form="filter-form" class="text-xs font-bold text-primary hover:underline">{% trans "Clear all" %}</button>
                 </div>
-                
+
                 <div class="space-y-5">
                     <div>
                         <label class="mb-2.5 block text-xs font-bold uppercase tracking-wider text-bodydark2">{% trans "Account Status" %}</label>
@@ -201,7 +201,7 @@
                             <svg class="fill-current w-4.5 h-4.5" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M15.0914 2.90856C14.6771 2.49433 14.0357 2.49433 13.6214 2.90856L12.1464 4.38356L13.6164 5.85356L15.0914 4.37856C15.5057 3.96433 15.5057 3.3228 15.0914 2.90856Z"></path><path d="M11.1107 5.41929L12.5807 6.88929L4.51571 14.9543L3.04071 14.9543L3.04071 13.4793L11.1107 5.41929Z"></path></svg>
                         </a>
                     {% endif %}
-                    
+
                     <button class="flex h-9 w-9 items-center justify-center rounded-lg bg-white dark:bg-boxdark text-bodydark2 hover:text-meta-3 hover:shadow-md transition-all duration-300 toggle-user-status" data-user-id="{{ account.user.id }}" data-action="{% if account.user.is_active %}deactivate{% else %}activate{% endif %}" title="{% if account.user.is_active %}{% trans 'Suspend Access' %}{% else %}{% trans 'Restore Access' %}{% endif %}">
                         {% if account.user.is_active %}
                             <svg class="fill-current w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM11 16H13V14H11V16ZM11 12H13V7H11V12Z"></path></svg>
@@ -270,9 +270,17 @@
         }
     });
 
-    async function handleAction(button, url, data, successMsg) {
-        if (!confirm('{% trans "Are you sure?" %}')) return;
-        
+    async function handleAction(url, data, successMsg, confirmTitle, confirmText) {
+        const { isConfirmed } = await Swal.fire({
+            title: confirmTitle,
+            text: confirmText,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '{% trans "Yes, proceed" %}',
+            cancelButtonText: '{% trans "Cancel" %}',
+        });
+        if (!isConfirmed) return;
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -282,7 +290,7 @@
                 },
                 body: new URLSearchParams(data)
             });
-            
+
             if (response.ok) {
                 showAlert('{% trans "Success" %}', successMsg, 'success');
                 setTimeout(() => location.reload(), 1000);
@@ -294,30 +302,33 @@
         }
     }
 
-    document.querySelectorAll('.verify-account').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            handleAction(button, '{% url "apps.users:verify_email_api" %}', 
-                { user_id: button.getAttribute('data-user-id') },
-                '{% trans "The user has been verified." %}'
-            );
-        });
-    });
-
     document.querySelectorAll('.delete-account').forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             const id = button.getAttribute('data-account-id');
-            handleAction(button, `/users/accounts/${id}/delete/`, {}, '{% trans "The account has been deleted." %}');
+            handleAction(
+                `/users/accounts/${id}/delete/`,
+                {},
+                '{% trans "The account has been deleted." %}',
+                '{% trans "Delete Account" %}',
+                '{% trans "This action is permanent and cannot be undone." %}'
+            );
         });
     });
 
     document.querySelectorAll('.toggle-user-status').forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
-            handleAction(button, '/users/api/toggle-user-status/', 
-                { user_id: button.getAttribute('data-user-id'), action: button.getAttribute('data-action') },
-                '{% trans "Status updated successfully." %}'
+            const action = button.getAttribute('data-action');
+            const isDeactivating = action === 'deactivate';
+            handleAction(
+                '/users/api/toggle-user-status/',
+                { user_id: button.getAttribute('data-user-id'), action: action },
+                '{% trans "Status updated successfully." %}',
+                isDeactivating ? '{% trans "Suspend Access" %}' : '{% trans "Restore Access" %}',
+                isDeactivating
+                    ? '{% trans "This user will no longer be able to log in. You can restore access at any time." %}'
+                    : '{% trans "This user will regain access to the platform." %}'
             );
         });
     });
