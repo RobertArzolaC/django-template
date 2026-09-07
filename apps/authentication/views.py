@@ -1,5 +1,6 @@
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.forms import ValidationError
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -33,7 +34,11 @@ class DeactivateAccountView(View):
         if not form.is_valid():
             return JsonResponse(response, status=400)
 
-        user = form.save()
+        try:
+            user = form.save()
+        except ValidationError:
+            return JsonResponse(response, status=400)
+
         user.is_active = False
         user.save()
         return JsonResponse(

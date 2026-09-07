@@ -4,6 +4,7 @@ from constance import config
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.db import transaction
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
 from apps.users import mixins, models
@@ -23,9 +24,7 @@ class CustomUserChangeForm(UserChangeForm):
 
 class UserSettingsForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, label=_("First name"))
-    last_name = forms.CharField(
-        max_length=30, label=_("Last name"), required=False
-    )
+    last_name = forms.CharField(max_length=30, label=_("Last name"), required=False)
 
     class Meta:
         model = models.User
@@ -47,9 +46,7 @@ class AccountCreationForm(mixins.PermissionFormMixin, SignupForm):
         email = cleaned_data.get("email")
 
         if models.User.objects.filter(email=email).exists():
-            raise forms.ValidationError(
-                _("An account with this email already exists")
-            )
+            raise forms.ValidationError(_("An account with this email already exists"))
 
         return cleaned_data
 
@@ -59,11 +56,9 @@ class AccountCreationForm(mixins.PermissionFormMixin, SignupForm):
 
             user.first_name = self.cleaned_data["first_name"]
             user.last_name = self.cleaned_data["last_name"]
-            user.user_type = self.cleaned_data["user_type"]
             user.avatar = self.cleaned_data["avatar"]
-            user.must_change_password = True
 
-            temp_password = models.User.objects.make_random_password()
+            temp_password = get_random_string(length=12)
             user.set_password(temp_password)
             user.save()
             self.save_permissions(user)
@@ -86,7 +81,7 @@ class AccountUpdateForm(mixins.PermissionFormMixin, forms.ModelForm):
 
     class Meta:
         model = models.Account
-        fields = ["avatar"]
+        fields = []
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)

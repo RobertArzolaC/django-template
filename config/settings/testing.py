@@ -9,7 +9,9 @@ DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = False
 
 # Static files (CSS, JavaScript, Images)
 # STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa
-DEBUG = True
+# Keep DEBUG off so dev-only tooling (debug_toolbar, browser_reload) is not
+# imported by config.urls and real error handlers (404/500/403) are used.
+DEBUG = False
 
 # Email settings
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"

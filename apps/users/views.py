@@ -39,9 +39,7 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
         }
 
         if user.is_account:
-            context["account_form"] = forms.AccountSettingsForm(
-                instance=user.account
-            )
+            context["account_form"] = forms.AccountSettingsForm(instance=user.account)
 
         context.update(kwargs)
         return context
@@ -104,6 +102,11 @@ class AccountCreateView(core_mixins.BaseCreateView):
         form.save(self.request)
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.pop("instance", None)
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["entity"] = _("Account")
@@ -134,3 +137,4 @@ class AccountUpdateView(core_mixins.BaseUpdateView):
 
 class AccountDeleteView(core_mixins.BaseDeleteView):
     model = models.Account
+    permission_required = "users.delete_account"
