@@ -65,6 +65,12 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
                 if account_form.is_valid():
                     account_form.save()
 
+            avatar_file = request.FILES.get("avatar")
+            remove_avatar = request.POST.get("avatar_remove") == "1"
+            if avatar_file or remove_avatar:
+                user.avatar = avatar_file if avatar_file else None
+                user.save(update_fields=["avatar"])
+
             messages.success(request, self.success_message)
             return redirect(self.success_url)
         except Exception as e:

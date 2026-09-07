@@ -31,11 +31,6 @@ urlpatterns = [
         name="toggle_user_status_api",
     ),
     path(
-        "api/upload-avatar/",
-        api.UploadAvatarView.as_view(),
-        name="upload_avatar_api",
-    ),
-    path(
         "api/verify-email/",
         api.VerifyEmailView.as_view(),
         name="verify_email_api",

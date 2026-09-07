@@ -38,26 +38,6 @@ class ToggleUserStatusView(LoginRequiredMixin, View):
         )
 
 
-class UploadAvatarView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        avatar = request.FILES.get("avatar")
-
-        if not avatar:
-            return JsonResponse({"success": False, "message": _("No file uploaded")})
-
-        user.avatar = avatar
-        user.save()
-
-        return JsonResponse(
-            {
-                "success": True,
-                "message": _("Avatar has been successfully uploaded"),
-                "avatar_url": user.avatar.url,
-            }
-        )
-
-
 class VerifyEmailView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         user_id = request.POST.get("user_id")

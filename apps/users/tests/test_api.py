@@ -1,7 +1,6 @@
 """Tests for the ``apps.users.api`` module."""
 
 from allauth.account.models import EmailAddress
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
@@ -62,34 +61,6 @@ class ToggleUserStatusViewTests(TestCase):
             self.url, {"user_id": self.target.pk, "action": "activate"}
         )
         self.assertEqual(response.status_code, 302)
-
-
-class UploadAvatarViewTests(TestCase):
-    """Tests for the avatar upload endpoint."""
-
-    def setUp(self) -> None:
-        self.user = UserFactory()
-        self.client.force_login(self.user)
-        self.url = reverse("apps.users:upload_avatar_api")
-
-    def test_upload_without_file(self) -> None:
-        """Posting without a file returns a failed JSON response."""
-        response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.json()["success"])
-
-    def test_upload_avatar(self) -> None:
-        """Posting a valid image stores it on the user."""
-        avatar = SimpleUploadedFile(
-            "avatar.png", b"file-content", content_type="image/png"
-        )
-        response = self.client.post(self.url, {"avatar": avatar})
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertTrue(data["success"])
-        self.assertTrue(data["avatar_url"])
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.avatar)
 
 
 class VerifyEmailViewTests(TestCase):
