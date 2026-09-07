@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from apps.authentication.views import PasswordChangeView
 from apps.core import views as core_views
 
 handler404 = core_views.Error404View.as_view()
@@ -12,6 +13,11 @@ handler403 = core_views.Error403View.as_view()
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "authentication/password/change/",
+        PasswordChangeView.as_view(),
+        name="account_change_password",
+    ),
     path("authentication/", include("allauth.urls")),
     path("", LoginView.as_view(), name="account_login"),
 ]

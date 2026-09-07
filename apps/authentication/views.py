@@ -1,8 +1,10 @@
+from allauth.account import views as allauth_views
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import ValidationError
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -54,3 +56,17 @@ class ValidatePasswordView(LoginRequiredMixin, View):
         password = request.POST.get("password") or ""
         checks = services.get_password_checks(password, user=request.user)
         return JsonResponse({"checks": checks})
+
+
+class PasswordChangeView(allauth_views.PasswordChangeView):
+    """Renders the dashboard-styled password change page."""
+
+    success_url = reverse_lazy("apps.users:settings")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["password_checks"] = services.get_password_checks(
+            None, user=self.request.user
+        )
+        context["back_url"] = reverse_lazy("apps.users:settings")
+        return context
