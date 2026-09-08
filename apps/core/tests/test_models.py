@@ -74,9 +74,10 @@ class PersonPropertiesTests(TestCase):
 
     def test_age_with_birth_date(self) -> None:
         """``age`` is computed from the birth date."""
-        self.person.birth_date = date(date.today().year - 20, 1, 1)
-        expected = date.today().year - self.person.birth_date.year
-        if (date.today().month, date.today().day) < (
+        today = timezone.localdate()
+        self.person.birth_date = date(today.year - 20, 1, 1)
+        expected = today.year - self.person.birth_date.year
+        if (today.month, today.day) < (
             self.person.birth_date.month,
             self.person.birth_date.day,
         ):

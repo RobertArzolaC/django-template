@@ -12,8 +12,8 @@ from apps.core.mixins.views import (
 __all__ = [
     "BaseCreateView",
     "BaseDeleteView",
-    "BaseListView",
     "BaseFormView",
+    "BaseListView",
     "BaseTemplateView",
     "BaseUpdateView",
     "CacheMixin",

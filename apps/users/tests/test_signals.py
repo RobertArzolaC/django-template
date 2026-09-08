@@ -4,7 +4,8 @@ from unittest import mock
 
 from django.test import TestCase
 
-from apps.users import models as users_models, signals
+from apps.users import models as users_models
+from apps.users import signals
 from apps.users.factories import AccountFactory, UserFactory
 
 

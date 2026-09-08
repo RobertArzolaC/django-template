@@ -3,8 +3,8 @@
 from django.test import TestCase
 
 from apps.users import models as users_models
-from apps.users.filtersets import AccountFilter
 from apps.users.factories import UserFactory
+from apps.users.filtersets import AccountFilter
 
 
 class AccountFilterTests(TestCase):

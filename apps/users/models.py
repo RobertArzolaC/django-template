@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from allauth.account.models import EmailAddress
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -11,12 +13,10 @@ from apps.users.managers import CustomUserManager
 class User(AbstractUser):
     username = None
     email = models.EmailField(_("email address"), unique=True)
-    avatar = models.ImageField(
-        upload_to="users/avatars/", null=True, blank=True
-    )
+    avatar = models.ImageField(upload_to="users/avatars/", null=True, blank=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: ClassVar[list[str]] = []
 
     objects = CustomUserManager()
 
@@ -54,6 +54,4 @@ class Account(SoftDeletableModel, TimeStampedModel):
 
     @cached_property
     def is_email_verified(self):
-        return EmailAddress.objects.filter(
-            user=self.user, verified=True
-        ).exists()
+        return EmailAddress.objects.filter(user=self.user, verified=True).exists()

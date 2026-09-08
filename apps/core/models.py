@@ -1,4 +1,4 @@
-from datetime import date
+from typing import ClassVar
 
 from cities_light.models import City, Country, Region, SubRegion
 from django.conf import settings
@@ -16,15 +16,11 @@ class BaseAddress(models.Model):
     country = models.ForeignKey(
         Country, on_delete=models.SET_NULL, null=True, blank=True
     )
-    region = models.ForeignKey(
-        Region, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
     subregion = models.ForeignKey(
         SubRegion, on_delete=models.SET_NULL, null=True, blank=True
     )
-    city = models.ForeignKey(
-        City, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -60,21 +56,15 @@ class BaseUserTracked(models.Model):
 
 class Person(BaseAddress, BaseContact):
     first_name = models.CharField(_("First name"), max_length=150)
-    paternal_last_name = models.CharField(
-        _("Paternal last name"), max_length=150
-    )
-    maternal_last_name = models.CharField(
-        _("Maternal last name"), max_length=150
-    )
+    paternal_last_name = models.CharField(_("Paternal last name"), max_length=150)
+    maternal_last_name = models.CharField(_("Maternal last name"), max_length=150)
     document_type = models.CharField(
         _("Document type"),
         max_length=20,
         choices=choices.DocumentType.choices,
         default=choices.DocumentType.DOCUMENT,
     )
-    document_number = models.CharField(
-        _("Document number"), max_length=20, unique=True
-    )
+    document_number = models.CharField(_("Document number"), max_length=20, unique=True)
     gender = models.CharField(
         _("Gender"),
         max_length=1,
@@ -96,7 +86,9 @@ class Person(BaseAddress, BaseContact):
         abstract = True
 
     def __str__(self):
-        base_str = f"{self.first_name} {self.paternal_last_name} ({self.document_number})"
+        base_str = (
+            f"{self.first_name} {self.paternal_last_name} ({self.document_number})"
+        )
         if self.maternal_last_name:
             base_str = f"{self.first_name} {self.paternal_last_name} {self.maternal_last_name} ({self.document_number})"
         return base_str
@@ -104,7 +96,9 @@ class Person(BaseAddress, BaseContact):
     @property
     def full_name(self):
         if self.maternal_last_name:
-            return f"{self.first_name} {self.paternal_last_name} {self.maternal_last_name}"
+            return (
+                f"{self.first_name} {self.paternal_last_name} {self.maternal_last_name}"
+            )
         return f"{self.first_name} {self.paternal_last_name}"
 
     @property
@@ -114,15 +108,13 @@ class Person(BaseAddress, BaseContact):
     @property
     def initials(self):
         initials = self.first_name[0] if self.first_name else ""
-        initials += (
-            self.paternal_last_name[0] if self.paternal_last_name else ""
-        )
+        initials += self.paternal_last_name[0] if self.paternal_last_name else ""
         return initials.upper()
 
     @property
     def age(self):
         if hasattr(self, "birth_date") and self.birth_date:
-            today = date.today()
+            today = timezone.localdate()
             age = today.year - self.birth_date.year
             if (today.month, today.day) < (
                 self.birth_date.month,
@@ -179,8 +171,8 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
         abstract = True
         verbose_name = _("Status History")
         verbose_name_plural = _("Status Histories")
-        ordering = ["-created"]
-        indexes = [
+        ordering: ClassVar[list[str]] = ["-created"]
+        indexes: ClassVar[list[models.Index]] = [
             models.Index(fields=["created"]),
         ]
 
@@ -202,9 +194,7 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
         Return a dictionary with the filters needed to uniquely identify the parent object.
         Example: return {"order": self.order}
         """
-        raise NotImplementedError(
-            "Subclasses must implement get_parent_filters()"
-        )
+        raise NotImplementedError("Subclasses must implement get_parent_filters()")
 
     @classmethod
     def get_parent_kwargs(cls, instance) -> dict:
@@ -212,9 +202,7 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
         Return the kwargs to set the parent ForeignKey on creation.
         Example: return {"order": instance}
         """
-        raise NotImplementedError(
-            "Subclasses must implement get_parent_kwargs()"
-        )
+        raise NotImplementedError("Subclasses must implement get_parent_kwargs()")
 
     @property
     def duration_in_status(self):
@@ -242,7 +230,7 @@ class StatusHistory(BaseUserTracked, TimeStampedModel):
         new_status: str,
         user,
         note: str = "",
-        previous_status: str = None,
+        previous_status: str | None = None,
     ):
         """Create a status history entry for an instance."""
         if not previous_status:

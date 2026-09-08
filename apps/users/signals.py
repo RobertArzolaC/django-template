@@ -16,9 +16,9 @@ def create_user_account(sender, instance, created, **kwargs):
             logger.info(
                 f"Cuenta creada automáticamente para el usuario: {instance.email}"
             )
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(
-                f"Error al crear cuenta para el usuario {instance.email}: {str(e)}"
+                f"Error al crear cuenta para el usuario {instance.email}: {e!s}"
             )
 
 

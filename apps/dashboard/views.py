@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 
 from apps.core.mixins import CacheMixin
 
+
 class DashboardView(CacheMixin, TemplateView):
     template_name = "dashboard/index.html"
     cache_timeout = 300

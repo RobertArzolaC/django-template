@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from allauth.account.forms import SignupForm
 from allauth.account.models import EmailAddress
 from constance import config
@@ -28,7 +30,7 @@ class UserSettingsForm(forms.ModelForm):
 
     class Meta:
         model = models.User
-        fields = ["first_name", "last_name"]
+        fields: ClassVar[list[str]] = ["first_name", "last_name"]
 
 
 class AccountCreationForm(mixins.PermissionFormMixin, SignupForm):
@@ -52,7 +54,7 @@ class AccountCreationForm(mixins.PermissionFormMixin, SignupForm):
 
     def save(self, request):
         with transaction.atomic():
-            user = super(AccountCreationForm, self).save(request)
+            user = super().save(request)
 
             user.first_name = self.cleaned_data["first_name"]
             user.last_name = self.cleaned_data["last_name"]
@@ -81,7 +83,7 @@ class AccountUpdateForm(mixins.PermissionFormMixin, forms.ModelForm):
 
     class Meta:
         model = models.Account
-        fields = []
+        fields: ClassVar[list[str]] = []
 
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)

@@ -5,9 +5,10 @@ from unittest import mock
 from allauth.account.forms import BaseSignupForm
 from allauth.account.models import EmailAddress
 from django.contrib.auth import get_user_model
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory, TestCase
 
-from apps.users import forms as users_forms, models as users_models
+from apps.users import forms as users_forms
+from apps.users import models as users_models
 from apps.users.factories import UserFactory
 
 User = get_user_model()
@@ -123,10 +124,12 @@ class AccountCreationFormTests(TestCase):
                 email=email, password="Passw0rd!123"
             )
 
-        with mock.patch.object(BaseSignupForm, "save", side_effect=fake_signup_save):
-            with mock.patch("apps.users.forms.config") as cfg:
-                cfg.ENABLE_SEND_EMAIL = False
-                user = form.save(self.request)
+        with (
+            mock.patch.object(BaseSignupForm, "save", side_effect=fake_signup_save),
+            mock.patch("apps.users.forms.config") as cfg,
+        ):
+            cfg.ENABLE_SEND_EMAIL = False
+            user = form.save(self.request)
 
         user.refresh_from_db()
         self.assertEqual(user.first_name, "Brand")
@@ -153,16 +156,14 @@ class AccountCreationFormTests(TestCase):
                 email=email, password="Passw0rd!123"
             )
 
-        with mock.patch.object(BaseSignupForm, "save", side_effect=fake_signup_save):
-            with (
-                mock.patch("apps.users.forms.config") as cfg,
-                mock.patch.object(
-                    EmailAddress, "send_confirmation"
-                ) as send_confirmation,
-            ):
-                cfg.ENABLE_SEND_EMAIL = True
-                form.save(self.request)
-                send_confirmation.assert_called_once_with(self.request, signup=True)
+        with (
+            mock.patch.object(BaseSignupForm, "save", side_effect=fake_signup_save),
+            mock.patch("apps.users.forms.config") as cfg,
+            mock.patch.object(EmailAddress, "send_confirmation") as send_confirmation,
+        ):
+            cfg.ENABLE_SEND_EMAIL = True
+            form.save(self.request)
+            send_confirmation.assert_called_once_with(self.request, signup=True)
 
 
 class AccountUpdateFormTests(TestCase):

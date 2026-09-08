@@ -59,7 +59,7 @@ class BaseDeleteViewTests(TestCase):
 
     def test_handle_no_permission_returns_json_403(self) -> None:
         """Permission errors are reported as JSON 403 responses."""
-        request, view = self.post_request(1)
+        _request, view = self.post_request(1)
         response = view.handle_no_permission()
         self.assertEqual(response.status_code, 403)
         self.assertEqual(parse_json(response)["status"], "error")

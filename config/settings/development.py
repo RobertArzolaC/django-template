@@ -1,15 +1,17 @@
-from config.settings.base import *  # noqa
-from config.settings.tools.django_constance import *  # noqa
-from config.settings.tools.django_easy_audit import *  # noqa
+from django.conf import settings
+
+from config.settings.base import *
+from config.settings.tools.django_constance import *
+from config.settings.tools.django_easy_audit import *
 
 # Apps settings
 
-INSTALLED_APPS += [  # noqa
+INSTALLED_APPS += [
     "debug_toolbar",
     "django_browser_reload",
 ]
 
-MIDDLEWARE += [  # noqa
+MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
@@ -21,7 +23,7 @@ DEBUG_TOOLBAR_PANELS = [
 ]
 
 DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda request: True,
+    "SHOW_TOOLBAR_CALLBACK": lambda request: settings.DEBUG,
     "IS_RUNNING_TESTS": False,
 }
 

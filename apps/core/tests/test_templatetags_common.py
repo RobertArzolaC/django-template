@@ -87,4 +87,4 @@ class FormatNumberTests(SimpleTestCase):
     def test_plain_number_kept(self) -> None:
         """Numbers without decimals are preserved."""
         self.assertEqual(format_number("5"), "5")
-        self.assertEqual(format_number(Decimal("7")), "7")
+        self.assertEqual(format_number(Decimal(7)), "7")

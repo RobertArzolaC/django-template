@@ -38,15 +38,11 @@ class BaseUpdateView(
     pass
 
 
-class BaseListView(
-    LoginRequiredMixin, PermissionRequiredMixin, FilterView, ListView
-):
+class BaseListView(LoginRequiredMixin, PermissionRequiredMixin, FilterView, ListView):
     pass
 
 
-class BaseTemplateView(
-    LoginRequiredMixin, PermissionRequiredMixin, TemplateView
-):
+class BaseTemplateView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     pass
 
 
@@ -64,28 +60,27 @@ class BaseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, View):
             return JsonResponse(
                 {
                     "status": "success",
-                    "message": _(
-                        f"The {entity_name} was successfully deleted."
-                    ),
+                    "message": _("The %(entity_name)s was successfully deleted.")
+                    % {"entity_name": entity_name},
                 }
             )
         except self.model.DoesNotExist:
             return JsonResponse(
-                {"status": "error", "message": _(f"{entity_name} not found.")},
+                {
+                    "status": "error",
+                    "message": _("%(entity_name)s not found.")
+                    % {"entity_name": entity_name},
+                },
                 status=404,
             )
-        except Exception as e:
-            return JsonResponse(
-                {"status": "error", "message": str(e)}, status=500
-            )
+        except Exception as e:  # noqa: BLE001
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     def handle_no_permission(self):
         return JsonResponse(
             {
                 "status": "error",
-                "message": _(
-                    "You do not have permission to delete this account."
-                ),
+                "message": _("You do not have permission to delete this account."),
             },
             status=403,
         )

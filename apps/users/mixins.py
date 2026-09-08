@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django import forms
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -5,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class PermissionFormMixin:
-    PERMISSION_MAPPING = {
+    PERMISSION_MAPPING: ClassVar[dict[str, dict[str, str]]] = {
         "account": {"app": "users", "model": "account"},
     }
 
@@ -23,7 +25,8 @@ class PermissionFormMixin:
                 codename = f"{action}_{info['model']}"
                 permission_fields[field_name] = forms.BooleanField(
                     required=False,
-                    label=_(f"Can {action} {model_key}"),
+                    label=_("Can %(action)s %(model_key)s")
+                    % {"action": action, "model_key": model_key},
                     initial=self._get_initial_permission(
                         info["app"], info["model"], codename
                     ),
@@ -42,7 +45,7 @@ class PermissionFormMixin:
         return False
 
     def save_permissions(self, user):
-        for field_name, is_checked in self.permission_fields.items():
+        for field_name in self.permission_fields:
             action = field_name.split("_")[1]
             model_key = field_name.split("_")[2]
             model_info = self.PERMISSION_MAPPING[model_key]

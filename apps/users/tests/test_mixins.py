@@ -4,7 +4,8 @@ from django import forms
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 
-from apps.users import mixins, models as users_models
+from apps.users import mixins
+from apps.users import models as users_models
 from apps.users.factories import UserFactory
 
 

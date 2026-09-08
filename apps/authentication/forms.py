@@ -18,7 +18,7 @@ class CustomSignupForm(SignupForm):
     )
 
     def save(self, request):
-        user = super(CustomSignupForm, self).save(request)
+        user = super().save(request)
         user.first_name = self.cleaned_data["first_name"]
         user.last_name = self.cleaned_data["last_name"]
         user.save()
@@ -33,7 +33,9 @@ class DeactivateAccountForm(forms.Form):
         user = user_models.User.objects.filter(email=email).first()
 
         if not user:
-            raise forms.ValidationError(_("The email address is not registered with us."))
+            raise forms.ValidationError(
+                _("The email address is not registered with us.")
+            )
 
         user.is_active = False
         user.save()

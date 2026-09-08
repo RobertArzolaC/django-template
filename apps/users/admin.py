@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from allauth.account.models import EmailAddress
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -85,5 +87,5 @@ class AccountAdmin(admin.ModelAdmin):
         "user__first_name",
         "user__last_name",
     )
-    autocomplete_fields = ["user"]
+    autocomplete_fields: ClassVar[list[str]] = ["user"]
     exclude = ("is_removed",)

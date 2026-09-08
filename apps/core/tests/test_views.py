@@ -1,6 +1,6 @@
 """Tests for the ``apps.core.views`` error views."""
 
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory, TestCase
 
 from apps.core import views as core_views
 

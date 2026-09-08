@@ -73,8 +73,8 @@ class SettingsView(SuccessMessageMixin, LoginRequiredMixin, View):
 
             messages.success(request, self.success_message)
             return redirect(self.success_url)
-        except Exception as e:
-            messages.error(request, f"Error updating settings: {str(e)}")
+        except Exception as e:  # noqa: BLE001
+            messages.error(request, f"Error updating settings: {e!s}")
 
         return render(request, self.template_name, self.get_context_data())
 

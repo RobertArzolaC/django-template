@@ -28,9 +28,7 @@ def breadcrumb(context):
                     entity = url_name.split("_")[0]
                     title = f"{entity.title()}s"
                 elif (
-                    "detail" in url_name
-                    or "update" in url_name
-                    or "create" in url_name
+                    "detail" in url_name or "update" in url_name or "create" in url_name
                 ):
                     action = url_name.split("_")[1]
                     title = action.title()

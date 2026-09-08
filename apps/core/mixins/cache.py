@@ -9,9 +9,7 @@ class CacheMixin(View):
         return self.cache_timeout
 
     def get_cache_key_prefix(self, request):
-        user_id = (
-            request.user.id if request.user.is_authenticated else "anonymous"
-        )
+        user_id = request.user.id if request.user.is_authenticated else "anonymous"
         return f"user_{user_id}"
 
     def dispatch(self, request, *args, **kwargs):

@@ -40,9 +40,7 @@ class Command(BaseCommand):
         if superuser:
             users_created += 1
             self.stdout.write(
-                self.style.SUCCESS(
-                    f"Superuser created successfully: {superuser.email}"
-                )
+                self.style.SUCCESS(f"Superuser created successfully: {superuser.email}")
             )
         else:
             users_existed += 1
@@ -84,9 +82,7 @@ class Command(BaseCommand):
         email = user_data.pop("email")
         user = User.objects.filter(email=email).first()
         if not user:
-            user = User.objects.create_user(
-                email=email, password=password, **user_data
-            )
+            user = User.objects.create_user(email=email, password=password, **user_data)
 
             EmailAddress.objects.get_or_create(
                 user=user,

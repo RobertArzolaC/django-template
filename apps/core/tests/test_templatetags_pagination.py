@@ -1,6 +1,6 @@
 """Tests for the ``apps.core.templatetags.pagination`` tag."""
 
-from django.test import SimpleTestCase, RequestFactory
+from django.test import RequestFactory, SimpleTestCase
 
 from apps.core.templatetags.pagination import param_replace
 
