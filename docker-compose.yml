@@ -12,8 +12,6 @@ x-app: &app
     DB_HOST: db
     DB_PORT: "5432"
     DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-config.settings.development}
-    DJANGO_MIGRATE: "1"
-    DJANGO_COLLECTSTATIC: "0"
   volumes: &app-volumes
     - media_data:/app/media
   depends_on: &app-depends-on
@@ -58,6 +56,11 @@ services:
 
   django:
     <<: *app
+    environment:
+      <<: *app-env
+      DJANGO_MIGRATE: "1"
+      DJANGO_COMPILEMESSAGES: "1"
+      DJANGO_COLLECTSTATIC: "0"
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile -
     ports:
       - "${DJANGO_PORT:-8000}:8000"

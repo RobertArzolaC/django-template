@@ -29,6 +29,7 @@ dependencies = [
     "celery==5.6.3",
     "requests==2.34.2",
     "setuptools==84.0.0",
+    "honcho>=2.0.0",
 ]
 
 [dependency-groups]

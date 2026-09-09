@@ -11,6 +11,11 @@ if [ "${DJANGO_MIGRATE:-0}" = "1" ]; then
   python manage.py migrate --noinput
 fi
 
+if [ "${DJANGO_COMPILEMESSAGES:-0}" = "1" ]; then
+  echo "Compiling translation catalogs..."
+  python manage.py compilemessages --ignore ".venv/*"
+fi
+
 if [ "${DJANGO_COLLECTSTATIC:-0}" = "1" ]; then
   echo "Collecting static files..."
   python manage.py collectstatic --noinput

@@ -58,6 +58,12 @@ LOCAL_APPS = [
 ]
 
 TAILWIND_APP_NAME = "apps.theme"
+TAILWIND_USE_STANDALONE_BINARY = True
+TAILWIND_STANDALONE_BINARY_VERSION = "v4.2.2"
+TAILWIND_STANDALONE_START_COMMAND_ARGS = (
+    "-i static_src/src/styles.css -o static/css/dist/styles.css --watch=always"
+)
+
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -145,6 +151,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]

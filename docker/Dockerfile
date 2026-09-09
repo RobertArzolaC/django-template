@@ -11,13 +11,7 @@ COPY pyproject.toml uv.lock ./
 ARG UV_SYNC_ARGS="--frozen --group production"
 RUN uv sync ${UV_SYNC_ARGS}
 
-FROM node:22-alpine AS tailwind
-
-WORKDIR /app
-COPY . /app
-RUN cd /app/apps/theme/static_src && npm ci && npm run build < /dev/null
-
-FROM python:3.14-slim
+FROM python:3.14-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -29,7 +23,15 @@ WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
 
 COPY . /app
-COPY --from=tailwind /app/apps/theme/static/css/dist /app/apps/theme/static/css/dist
+
+# Compile Tailwind CSS using the standalone binary (no Node.js required).
+RUN DEBUG=false python manage.py tailwind build
+
+# GNU gettext (msgfmt) is required at runtime to compile .po catalogs
+# on container startup (see docker/docker-entrypoint.sh).
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gettext \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --uid 1000 appuser \
     && mkdir -p /app/media /app/staticfiles \
